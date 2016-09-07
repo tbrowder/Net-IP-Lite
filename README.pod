@@ -1,0 +1,49 @@
+=pod
+
+=encoding utf8
+
+=head2 Net::IP::Lite
+
+This is a limited version of CPAN's Net::IP for Perl 6 and provides
+a limited set of its basic IPv4 and IPv6 address manipulation functions.
+
+=for HTML <a href="https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6">
+          <img src="https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg?branch=master"></a>
+
+=head2 Functions Provided
+
+=over
+
+=item ip-is-ipv4
+
+=item ip-is-ipv6
+
+=item ip-get-version
+
+=item ip-expand_address
+
+=back
+
+=head2 Installation
+
+Use one of the following two methods for a normal  Perl 6 environment:
+
+  zef install Net::IP::Lite
+  panda install Net::IP::Lite
+
+If either attempt shows that the module isn't found or available,
+ensure your installer is current:
+
+  zef update
+  panda update
+
+If you want to use the latest version in the git repository, clone it and then:
+
+  cd /path/to/cloned/repository/directory
+  zef install .
+
+or
+
+  panda install .
+
+=cut
