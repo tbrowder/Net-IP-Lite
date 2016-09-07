@@ -14,13 +14,29 @@ a limited set of its basic IPv4 and IPv6 address manipulation functions.
 
 =over
 
+=item ip-get-version
+
+  Purpose           : Get an IP version
+  Params            : IP address
+  Returns           : 4, 6, 0 (don't know)
+
 =item ip-is-ipv4
+
+  Purpose           : Check if an IP address is version 4
+  Params            : IP address
+  Returns           : True or False
 
 =item ip-is-ipv6
 
-=item ip-get-version
+  Purpose           : Check if an IP address is version 6
+  Params            : IP address
+  Returns           : True or False
 
 =item ip-expand_address
+
+  Purpose           : Expand an address from compact notation
+  Params            : IP address, IP version
+  Returns           : expanded IP address or False on failure
 
 =back
 
@@ -45,5 +61,12 @@ If you want to use the latest version in the git repository, clone it and then:
 or
 
   panda install .
+
+=head2 Acknowledgements
+
+This module is indebted to the CPAN Perl IP::Net module authors for
+providing such a useful set of functions: Manuel Valente
+<manuel.valente@gmail.com>, Monica Cortes Sack <mcortes@ripe.net>, and
+Lee Wilmot <lee@ripe.net>.
 
 =cut
