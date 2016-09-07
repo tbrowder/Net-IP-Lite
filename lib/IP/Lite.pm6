@@ -1,7 +1,5 @@
 unit module Net::IP::Lite:ver<1.0.0>;
 
-use v6;
-
 sub ip-expand-address() is export {
 }
 
@@ -14,7 +12,7 @@ sub ip-is-ipv6() is export {
 sub ip-get-version() is export {
 }
 
-
+=begin pod
 #------------------------------------------------------------------------------
 # Subroutine ip_get_version
 # Purpose           : Get an IP version
@@ -255,3 +253,4 @@ sub ip_expand_address {
 
     return (lc(join ':', @ip));
 }
+=end pod
