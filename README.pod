@@ -32,7 +32,7 @@ Purpose           : Reverse an address from compact notation
 
 Params            : IP address
 
-Returns           : reversed IP address or '' on failure
+Returns           : reversed IP address or the empty string ('') on failure
 
   my $rev-addr = ip-reverse-address($ip);
 
