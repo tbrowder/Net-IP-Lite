@@ -46,7 +46,9 @@ functions.  Users should not normally need them.
 =item ip-get-version export(:internal)
 
 Purpose           : Get an IP version
+
 Params            : IP address
+
 Returns           : 4, 6, 0 (don't know)
 
   my $ipver = ip-get-version($ip);
@@ -54,7 +56,9 @@ Returns           : 4, 6, 0 (don't know)
 =item ip-is-ipv4 export(:internal)
 
 Purpose           : Check if an IP address is version 4
+
 Params            : IP address
+
 Returns           : True or False
 
   my $is-ipv4 = ip-is-ipv4($ip);
@@ -62,7 +66,9 @@ Returns           : True or False
 =item ip-is-ipv6 export(:internal)
 
 Purpose           : Check if an IP address is version 6
+
 Params            : IP address
+
 Returns           : True or False
 
   my $is-ipv6 = ip-is-ipv6($ip);
@@ -82,7 +88,6 @@ All "plain" addresses will be expanded to the 32-bit (IPv4) or 128-bit
 (IPv6) format, but the network prefix will be respected in the
 expansion of addresses in CIDR format.  Any CIDRs will be checked for
 validity for the type of address.
-
 
 =head2 Installation
 
