@@ -53,7 +53,7 @@ Purpose           : Get an IP version
 
 Params            : IP address
 
-Returns           : 4, 6, 0 (don't know)
+Returns           : 4, 6, or 0 (don't know)
 
   my $ipver = ip-get-version($ip);
 
@@ -131,8 +131,16 @@ the development process.  The Makefile can be tailored as desired.
 =head2 Acknowledgements
 
 This module is indebted to the CPAN Perl IP::Net module authors for
-providing such a useful set of functions: Manuel Valente
-<manuel.valente@gmail.com>, Monica Cortes Sack <mcortes@ripe.net>, and
-Lee Wilmot <lee@ripe.net>.
+providing such a useful set of functions:
+
+=over
+
+=index Manuel Valente <manuel.valente@gmail.com>
+
+=index Monica Cortes Sack <mcortes@ripe.net>
+
+=index Lee Wilmot <lee@ripe.net>.
+
+=back
 
 =cut
