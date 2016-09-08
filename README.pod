@@ -14,41 +14,49 @@ a subset of its basic IPv4 and IPv6 address manipulation functions.
 
 =over
 
+Usage:
+
+  use Net::IP::Lite;
+
 =item ip-expand-address
 
-  Purpose           : Expand an address from compact notation
-  Params            : IP address
-  Returns           : expanded IP address or '' on failure
+Purpose           : Expand an address from compact notation
+Params            : IP address
+Returns           : expanded IP address or '' on failure
 
 =item ip-reverse-address
 
-  Purpose           : Reverse an address from compact notation
-  Params            : IP address
-  Returns           : reversed IP address or '' on failure
+Purpose           : Reverse an address from compact notation
+Params            : IP address
+Returns           : reversed IP address or '' on failure
 
 =back
 
-=head2 Functions Provided by Tag C<:special>
+=head2 Functions Exported with Named Parameter C<:extra>
+
+Usage:
+
+  use Net::IP::Lite :extra;
 
 =over
 
-=item ip-get-version
+=item ip-get-version export(:extra)
 
-  Purpose           : Get an IP version
-  Params            : IP address
-  Returns           : 4, 6, 0 (don't know)
+Purpose           : Get an IP version
+Params            : IP address
+Returns           : 4, 6, 0 (don't know)
 
-=item ip-is-ipv4
+=item ip-is-ipv4 export(:extra)
 
-  Purpose           : Check if an IP address is version 4
-  Params            : IP address
-  Returns           : True or False
+Purpose           : Check if an IP address is version 4
+Params            : IP address
+Returns           : True or False
 
-=item ip-is-ipv6
+=item ip-is-ipv6 export(:extra)
 
-  Purpose           : Check if an IP address is version 6
-  Params            : IP address
-  Returns           : True or False
+Purpose           : Check if an IP address is version 6
+Params            : IP address
+Returns           : True or False
 
 =back
 
