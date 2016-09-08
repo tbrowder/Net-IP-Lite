@@ -135,11 +135,11 @@ providing such a useful set of functions:
 
 =over
 
-=index Manuel Valente <manuel.valente@gmail.com>
+=item Manuel Valente <manuel.valente@gmail.com>
 
-=index Monica Cortes Sack <mcortes@ripe.net>
+=item Monica Cortes Sack <mcortes@ripe.net>
 
-=index Lee Wilmot <lee@ripe.net>.
+=item Lee Wilmot <lee@ripe.net>.
 
 =back
 
