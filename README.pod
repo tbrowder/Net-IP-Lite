@@ -22,7 +22,7 @@ Purpose           : Expand an address from compact notation
 
 Params            : IP address
 
-Returns           : expanded IP address or '' on failure
+Returns           : expanded IP address or the empty string ('') on failure
 
   my $full-addr = ip-expand-address($ip);
 
