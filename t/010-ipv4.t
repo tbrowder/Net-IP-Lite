@@ -1,7 +1,7 @@
 use v6;
 use Test;
 
-plan 1;
+plan 6;
 
 # valid
 ok ip-is-ipv4 '0.0.0.0';
