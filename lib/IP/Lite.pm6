@@ -1,16 +1,23 @@
 unit module Net::IP::Lite:ver<1.0.0>;
 
+sub ip-get-version($ip) is export {
+    # If the address does not contain any ':', maybe it's IPv4
+    return '4' if $ip !~~ /\:/ and ip-is-ipv4($ip);
+
+    # Is it IPv6 ?
+    return '6' if ip-is-ipv6($ip);
+
+    return '0'; # unknown
+} # ip-get-version
+
 sub ip-expand-address() is export {
-}
+} # ip-expand-address
 
 sub ip-is-ipv4() is export {
-}
+} # ip-is-ipv4
 
 sub ip-is-ipv6() is export {
-}
-
-sub ip-get-version() is export {
-}
+} # ip-is-ipv6
 
 =begin pod
 #------------------------------------------------------------------------------
