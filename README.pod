@@ -14,6 +14,10 @@ a subset of its basic IPv4 and IPv6 address manipulation functions.
 
   use Net::IP::Lite;
 
+For debugging, set the module variable $DEBUG:
+
+  $Net::IP::Lite::DEBUG = True
+
 =over
 
 =item ip-expand-address
