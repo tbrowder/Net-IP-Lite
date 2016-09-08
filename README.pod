@@ -12,11 +12,9 @@ a subset of its basic IPv4 and IPv6 address manipulation functions.
 
 =head2 Functions Provided by Default
 
-=over
-
-Usage:
-
   use Net::IP::Lite;
+
+=over
 
 =item ip-expand-address
 
@@ -24,39 +22,50 @@ Purpose           : Expand an address from compact notation
 Params            : IP address
 Returns           : expanded IP address or '' on failure
 
+  my $full-addr = ip-expand-address($ip);
+
 =item ip-reverse-address
 
 Purpose           : Reverse an address from compact notation
 Params            : IP address
 Returns           : reversed IP address or '' on failure
 
+  my $rev-addr = ip-reverse-address($ip);
+
 =back
 
-=head2 Functions Exported with Named Parameter C<:extra>
+=head2 Additional Functions Exported with Named Parameter C<:internal>
 
-Usage:
+These functions are used internally by the default exported
+functions.  Users should not normally need them.
 
-  use Net::IP::Lite :extra;
+  use Net::IP::Lite :internal;
 
 =over
 
-=item ip-get-version export(:extra)
+=item ip-get-version export(:internal)
 
 Purpose           : Get an IP version
 Params            : IP address
 Returns           : 4, 6, 0 (don't know)
 
-=item ip-is-ipv4 export(:extra)
+  my $ipver = ip-get-version($ip);
+
+=item ip-is-ipv4 export(:internal)
 
 Purpose           : Check if an IP address is version 4
 Params            : IP address
 Returns           : True or False
 
-=item ip-is-ipv6 export(:extra)
+  my $is-ipv4 = ip-is-ipv4($ip);
+
+=item ip-is-ipv6 export(:internal)
 
 Purpose           : Check if an IP address is version 6
 Params            : IP address
 Returns           : True or False
+
+  my $is-ipv6 = ip-is-ipv6($ip);
 
 =back
 
