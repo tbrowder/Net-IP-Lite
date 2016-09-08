@@ -5,12 +5,30 @@
 =head2 Net::IP::Lite
 
 This is a limited version of CPAN's Net::IP for Perl 6 and provides
-a limited set of its basic IPv4 and IPv6 address manipulation functions.
+a subset of its basic IPv4 and IPv6 address manipulation functions.
 
 =for HTML <a href="https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6">
           <img src="https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg?branch=master"></a>
 
-=head2 Functions Provided
+=head2 Functions Provided by Default
+
+=over
+
+=item ip-expand-address
+
+  Purpose           : Expand an address from compact notation
+  Params            : IP address
+  Returns           : expanded IP address or '' on failure
+
+=item ip-reverse-address
+
+  Purpose           : Reverse an address from compact notation
+  Params            : IP address
+  Returns           : reversed IP address or '' on failure
+
+=back
+
+=head2 Functions Provided by Tag C<:special>
 
 =over
 
@@ -32,17 +50,26 @@ a limited set of its basic IPv4 and IPv6 address manipulation functions.
   Params            : IP address
   Returns           : True or False
 
-=item ip-expand_address
-
-  Purpose           : Expand an address from compact notation
-  Params            : IP address, IP version
-  Returns           : expanded IP address or False on failure
-
 =back
+
+=head2 Limitations
+
+Addresses may be entered in CIDR format and the network will be
+considered.
+
+For the moment, no consideration for plain addresses (those without
+the network prefix and length) is made for invalidity other than the
+format.
+
+All "plain" addresses will be expanded to the 32-bit (IPv4) or 128-bit
+(IPv6) format, but the network prefix will be respected in the
+expansion of addresses in CIDR format.  Any CIDRs will be checked for
+validity for the type of address.
+
 
 =head2 Installation
 
-Use one of the following two methods for a normal  Perl 6 environment:
+Use one of the following two methods for a normal Perl 6 environment:
 
   zef install Net::IP::Lite
   panda install Net::IP::Lite
@@ -61,6 +88,19 @@ If you want to use the latest version in the git repository, clone it and then:
 or
 
   panda install .
+
+=head2 Development
+
+It is the intent of this author to gradually add functions from the
+parent module as needed, eventually approaching its full
+functionality.  Interested users are encouraged to contribute
+improvements and corrections to this module, and pull requests, bug
+reports, and suggestions are always welcome.
+
+While testing will be normally be done as part of the zef or panda
+installation, cloning this project will result in a Makefile that can
+be used in fine-tuning tests and yielding more verbose results during
+the development process.  The Makefile can be tailored as desired.
 
 =head2 Acknowledgements
 
