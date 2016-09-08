@@ -19,7 +19,9 @@ a subset of its basic IPv4 and IPv6 address manipulation functions.
 =item ip-expand-address
 
 Purpose           : Expand an address from compact notation
+
 Params            : IP address
+
 Returns           : expanded IP address or '' on failure
 
   my $full-addr = ip-expand-address($ip);
@@ -27,7 +29,9 @@ Returns           : expanded IP address or '' on failure
 =item ip-reverse-address
 
 Purpose           : Reverse an address from compact notation
+
 Params            : IP address
+
 Returns           : reversed IP address or '' on failure
 
   my $rev-addr = ip-reverse-address($ip);
