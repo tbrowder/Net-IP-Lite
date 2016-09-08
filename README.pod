@@ -139,7 +139,7 @@ providing such a useful set of functions:
 
 =item Monica Cortes Sack <mcortes@ripe.net>
 
-=item Lee Wilmot <lee@ripe.net>.
+=item Lee Wilmot <lee@ripe.net>
 
 =back
 
