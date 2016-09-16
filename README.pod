@@ -14,9 +14,9 @@ a subset of its basic IPv4 and IPv6 address manipulation functions.
 
   use Net::IP::Lite;
 
-For debugging, set the module variable $DEBUG:
+For debugging, set the module's $DEBUG variable:
 
-  $Net::IP::Lite::DEBUG = True
+  $Net::IP::Lite::DEBUG = True;
 
 =over
 
@@ -44,7 +44,7 @@ Returns           : reversed IP address or the empty string ('') on failure
 
 =head2 Additional Functions Exported with Named Parameter C<:internal>
 
-These functions are used internally by the default exported
+The following functions are used internally by the default exported
 functions.  Users should not normally need them.
 
   use Net::IP::Lite :internal;
