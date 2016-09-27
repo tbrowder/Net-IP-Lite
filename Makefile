@@ -2,10 +2,10 @@ PERL6     := perl6
 LIBPATH   := lib
 
 # set below to 0 for no effect, 1 to die on first failure
-EARLYFAIL := PERL6_TEST_DIE_ON_FAIL=1
+EARLYFAIL := PERL6_TEST_DIE_ON_FAIL=0
 
 # set below for 0 for no effect and 1 to run Test::META
-TA := TEST_AUTHOR=0
+TA := TEST_AUTHOR=1
 
 .PHONY: test bad good
 

@@ -7,13 +7,13 @@ my $debug = 0;
 # Purpose           : Transform a bit string into an IP address
 # Params            : bit string, IP version
 # Returns           : IP address on success, undef otherwise
-sub ip-bintoip($binip, $ip_version) is export {
+sub ip-bintoip($binip is copy, $ip_version) is export {
 
     # Define normal size for address
     my $len = ip-iplengths($ip_version);
 
     if $len < $binip.chars {
-        warn "Invalid IP length for binary IP $binip\n" if $debug;
+        warn "Invalid IP length ({$binip.chars}, should be $len) for binary IP $binip\n" if $debug;
         return;
     }
 
@@ -31,16 +31,10 @@ sub ip-bintoip($binip, $ip_version) is export {
 	for 0, 8, 16, 24 -> $i {
 	    $ip ~= '.' if $i;
 	    # get the next 8 bits
-	    my @bits = @c[$i..$i+8];
-	    @bits.reverse;
+	    my $byte = join '', @c[$i..$i+7];
 	    # convert next 8 bits to decimal
-	    my $decimal = 0;
-	    for 0, 2, 4, 8, 16, 32 -> $power {
-		my $bit = shift @bits;
-		$decimal += $bit ** $power;
-	    }
-	    my $s = sprintf "%d", $decimal;
-	    $ip ~= $s;
+	    my $decimal = bin2decimal($byte);
+  	    $ip ~= $decimal;
 	}
 	return $ip;
     }
@@ -51,24 +45,74 @@ sub ip-bintoip($binip, $ip_version) is export {
     # split into individual bits
     my @c = $binip.comb;
 
-    # convert each 16-bit field to decimal and combine into the ip
+    # convert each 16-bit field to 4 hex chars and combine into the ip
     my $ip = '';
     for 0, 16, 32, 48, 64, 80, 96, 112 -> $i {
 	$ip ~= ':' if $i;
 	# get the next 16 bits
-	my @bits = @c[$i..$i+16];
-	@bits.reverse;
-	# convert next 16 bits to decimal
-	my $decimal = 0;
-	for 0, 2, 4, 8, 16, 32, 64, 128 -> $power {
-	    my $bit = shift @bits;
-	    $decimal += $bit ** $power;
-	}
-	my $s = sprintf "%x", $decimal;
-	$ip ~= $s;
+	my $half-word = join '', @c[$i..$i+15];
+	# convert next 16 bits to hex
+	my $hex = bin2hex($half-word, 4);
+	$ip ~= $hex;
     }
     return $ip;
 } # ip-bintoip
+
+
+#------------------------------------------------------------------------------
+# Subroutine ip_compress_address
+# Purpose           : Compress an IPv6 address
+# Params            : IP, IP version
+# Returns           : Compressed IP or undef (problem)
+sub ip-compress-address($ip is copy, $ip-version) is export {
+
+    unless ($ip-version) {
+        warn "Cannot determine IP version for $ip\n" if $debug;
+        return;
+    }
+
+    # Just return if IP is IPv4
+    return $ip if $ip-version == 4;
+
+    # already compressed addresses must be expanded first
+    $ip = ip-expand-address($ip, $ip-version);
+
+    my @quads = split ':', $ip;
+
+    # Remove leading 0s: 0034 -> 34; 0000 -> 0
+    for @quads <-> $q {
+	my @q = $q.comb;
+	while +@q {
+	    last if @q[0] != 0;
+	    shift @q;
+	}
+	if !+@q {
+	    $q = 0;
+	}
+	else {
+	    $q = join '', @q;
+	}
+
+	$q = 0 if !+@q;
+    }
+
+    say "DEBUG";
+    say @quads.perl;
+
+    my $reg = '';
+
+    # Find the longest :0:0: sequence
+    #my $longest-seq = 0;
+    #my $longest-seq-index;
+    while 0 {
+
+    }
+
+    # Replace sequence by '::'
+
+    return $ip;
+
+} # ip-compress-address
 
 #------------------------------------------------------------------------------
 # Subroutine ip-iptobin
@@ -80,10 +124,10 @@ sub ip-iptobin($ip is copy, $ipversion) is export {
     # v4 -> return 32-bit array
     if $ipversion == 4 {
         #return unpack('B32', pack('C4C4C4C4', split(/\./, $ip)));
-	my @octets = split /\./, $ip;
+	my @octets = split '.', $ip;
 	my $binip = '';
 	for @octets -> $decimal {
-	    my $s = sprintf "%0b", $decimal;
+	    my $s = sprintf "%08b", $decimal;
 	    $binip ~= $s;
 	}
 	my $nbits = $binip.chars;
@@ -96,14 +140,17 @@ sub ip-iptobin($ip is copy, $ipversion) is export {
 	}
     }
 
+    # expand to full size
+    $ip = ip-expand-address($ip, 6);
     # Strip ':'
     $ip ~~ s:g/':'//;
 
-    # Check size
+    # Check hex size
     unless $ip.chars == 32 {
         warn "Bad IP address $ip\n" if $debug;
         return;
     }
+
 
     # v6 -> return 128-bit array
     #return unpack('B128', pack('H32', $ip));
@@ -111,35 +158,12 @@ sub ip-iptobin($ip is copy, $ipversion) is export {
     $ip.lc;
     my @c = $ip.comb;
 
-    # convert each 4-bit hex number to decimal, then to binary, and combine into the ip
+    # convert each 4-bit hex digit to 4-bit binary, and combine into the ip
     my $binip = '';
     for @c -> $c {
-	my $num;
-	if $c ~~ /^ \d+ $/ {
-	    # 0..9
-	    $num = $c;
-	}
-	elsif $c eq 'a' {
-	    $num = 10;
- 	}
-	elsif $c eq 'b' {
-	    $num = 11;
-	}
-	elsif $c eq 'c' {
-	    $num = 12;
-	}
-	elsif $c eq 'd' {
-	    $num = 13;
-	}
-	elsif $c eq 'e' {
-	    $num = 14;
-	}
-	elsif $c eq 'f' {
-	    $num = 15;
-	}
-	my $s = sprintf "%04b", $num;
-	$binip ~= $s;
+	$binip ~= hexchar2binary($c);
     }
+    # Check binary size
     my $nbits = $binip.chars;
     if $nbits == 128 {
 	return $binip;
@@ -187,7 +211,7 @@ sub ip-get-version($ip) is export {
 # Subroutine ip_expand_address
 # Purpose           : Expand an address from compact notation
 # Params            : IP address, IP version
-# Returns           : expanded IP address orundef on failure
+# Returns           : expanded IP address or undef on failure
 sub ip-expand-address($ip is copy, $ip-version) is export {
 
     unless $ip-version {
@@ -195,16 +219,15 @@ sub ip-expand-address($ip is copy, $ip-version) is export {
         return;
     }
 
-    # v4 : add .0 for missing quads
+    # IPv4 : add .0 for missing quads
     if $ip-version == 4 {
-        my @quads = split /\./, $ip;
+        my @quads = split / '.' /, $ip;
 
         # check number of quads
         if +@quads > 4 {
             warn "Not a valid IPv4 address $ip\n" if $debug;
             return;
         }
-        #my @clean_quads = 0, 0, 0, 0;
         my @clean_quads;
         for @quads.reverse -> $q {
 
@@ -230,33 +253,40 @@ sub ip-expand-address($ip is copy, $ip-version) is export {
         return (join '.', @clean_quads);
     }
 
+    # IPv6
+
     # Keep track of ::
-    my $num_of_double_colon = ($ip ~~ s:g/'::'/':!:'/);
-    if $num_of_double_colon > 1 {
+    my $num-double-colons = count-substrs($ip, '::');
+    if $num-double-colons > 1 {
         warn "Too many :: in ip\n" if $debug;
         return;
     }
+    # mark the double colons
+    $ip ~~ s/ '::' /:!:/;
 
     # IP as an array
-    my @ip = split /':'/, $ip;
+    my @ip = split ':', $ip;
 
-    # Number of octets
+    # Number of actual octets
     my $num = +@ip;
 
-    for 0 .. (+@ip - 1) {
+    my $finalip = '';
+    for @ip <-> $q {
 
         # Embedded IPv4
-        if @ip[$_] ~~ /\./ {
+        if $q ~~ / '.' / {
 
             # Expand Ipv4 address
             # Convert into binary
             # Convert into hex
             # Keep the last two octets
 
-            @ip[$_] = substr( ip-bintoip( ip-iptobin( ip-expand-address(@ip[$_], 4), 4), 6), -9);
+	    die "fix this";
+
+            $q = substr( ip-bintoip( ip-iptobin( ip-expand-address($q, 4), 4), 6), -9);
 
             # Has an error occured here ?
-            return unless @ip[$_];
+            return unless $q;
 
             # ++$num because we now have one more octet:
             # IPv4 address becomes two octets
@@ -264,25 +294,25 @@ sub ip-expand-address($ip is copy, $ip-version) is export {
             next;
         }
 
-        # Add missing trailing 0s
-        @ip[$_] = ('0' x (4 - @ip[$_].chars)) ~ @ip[$_];
-    }
-
-    # Now deal with '::' ('000!')
-    for 0 .. (+@ip - 1) {
-
         # Find the pattern
-        next unless @ip[$_] eq '000!';
+	if $q !~~ / '!' / {
+	    $finalip ~= ':' if $finalip;
+            # Add missing leading 0s
+	    my $s = '0' x (4 - $q.chars);
+	    $finalip ~= $s ~ $q;
+	    next;
+	}
 
-        # @empty is the IP address 0
-        my @empty = map { $_ = '0' x 4 }, (0 .. 7);
-
-        # Replace :: with $num '0000' octets
-        @ip[$_] = join ':', @empty[ 0 .. 8 - $num ];
-        last;
+	# how many zero fields do we need to fill?
+	my $nfields = 9 - $num;
+	for 1..$nfields {
+	    $finalip ~= ':' if $finalip;
+	    $finalip ~= '0000';
+	}
     }
 
-    return (lc (join ':', @ip));
+    return $finalip;
+
 } # ip-expand-address
 
 #------------------------------------------------------------------------------
@@ -293,16 +323,16 @@ sub ip-expand-address($ip is copy, $ip-version) is export {
 sub ip-is-ipv4($ip is copy) is export {
     # Check for invalid chars
     unless $ip ~~ /^ <[\d\.]>+ $/ {
-        warn "Invalid chars in IP '$ip'\n" if $debug;
+        warn "Invalid chars in IP '$ip'\n" if $debug > 1;
         return False;
     }
 
-    if $ip ~~ /^\./ {
+    if $ip ~~ /^ '.' / {
         warn "Invalid IP $ip - starts with a dot\n" if $debug;
         return False;
     }
 
-    if $ip ~~ /\.$/ {
+    if $ip ~~ / '.' $/ {
         warn "Invalid IP $ip - ends with a dot\n" if $debug;
         return False;
     }
@@ -312,30 +342,20 @@ sub ip-is-ipv4($ip is copy) is export {
 
     # Count quads
     # IPv4 must have from 1 to 4 quads
-    #my $n = ($ip ~~ tr/\./\./);
-    my $n;
-    {
-	my $ndots = 0;
-	my $idx = index $ip, '.';
-	while ($idx.defined) {
-	    ++$ndots;
-	    $idx = index $ip, '.', $idx+1
-	}
-	$n = $ndots;
-    }
+    my $n = count-substrs($ip, '.');
     unless $n >= 0 and $n < 4 {
-        warn "Invalid IP address $ip ($n dots found)\n" if $debug;
+        warn "Invalid IP address $ip ($n dots found)\n" if $debug > 1;
         return False;
     }
     warn "DEBUG: found $n dots\n" if $debug;
 
     # Check for empty quads
-    if $ip ~~ /\.\./ {
+    if $ip ~~ / '..' / {
         warn "Empty quad in IP address $ip\n" if $debug;
         return False;
     }
 
-    for split /\./, $ip {
+    for split /'.'/, $ip {
         # Check for invalid quads
         unless $_ >= 0 and $_ < 256 {
             warn "Invalid quad in IP address $ip - $_\n" if $debug;
@@ -353,7 +373,9 @@ sub ip-is-ipv4($ip is copy) is export {
 # Returns           : True (yes) or False (no)
 sub ip-is-ipv6($ip is copy) is export {
     # Count octets
-    my $n = ($ip ~~ tr/:/:/);
+    # IPv4 must have from 1 to 8 octets (at least one colon)
+    #my $n = ($ip ~~ tr/:/:/);
+    my $n = count-substrs($ip, ':');
     return False unless $n > 0 and $n < 8;
 
     # $k is a counter
@@ -370,7 +392,7 @@ sub ip-is-ipv6($ip is copy) is export {
 
         # Last octet - is it IPv4 ?
         if ($k == $n + 1) && ip-is-ipv4($_) {
-            $n++; # ipv4 is two octets
+            ++$n; # ipv4 is two octets
             next;
         }
 
@@ -378,20 +400,21 @@ sub ip-is-ipv6($ip is copy) is export {
         return False;
     }
 
-    # Does the IP address start with : ?
+    # Does the IP address start with a single : ?
     if $ip ~~ /^ ':' <-[\:]> / {
         warn "Invalid address $ip (starts with :)\n" if $debug;
         return False;
     }
 
-    # Does the IP address finish with : ?
+    # Does the IP address finish with a single : ?
     if $ip ~~ / <-[\:]> ':' $/ {
         warn "Invalid address $ip (ends with :)\n" if $debug;
         return False;
     }
 
     # Does the IP address have more than one '::' pattern ?
-    if $ip ~~ s:g/ ':'(':')/':'/ > 1 {
+    my $ncolonpairs = count-substrs($ip, '::');
+    if $ncolonpairs > 1 {
         warn "Invalid address $ip (More than one :: pattern)\n" if $debug;
         return False;
     }
@@ -405,6 +428,88 @@ sub ip-is-ipv6($ip is copy) is export {
     # valid IPv6 address
     return True;
 } # ip-is-ipv6
+
+sub count-substrs($ip, $substr) {
+    my $nsubstrs = 0;
+    my $idx = index $ip, $substr;
+    while $idx.defined {
+	++$nsubstrs;
+	$idx = index $ip, $substr, $idx+1;
+    }
+    return $nsubstrs;
+}
+
+sub hexchar2binary($hexchar) is export {
+    my $decimal = hexchar2decimal($hexchar);
+    return sprintf "%04b", $decimal;
+}
+
+sub hexchar2decimal($hexchar is copy) is export {
+    fail "FATAL: \$hexchar = '$hexchar' has > 1 char" if $hexchar.chars != 1;
+    my $num;
+    $hexchar .= lc;
+
+    if $hexchar ~~ /^ \d+ $/ {
+	# 0..9
+	$num = $hexchar;
+    }
+    elsif $hexchar eq 'a' {
+	$num = 10;
+    }
+    elsif $hexchar eq 'b' {
+	$num = 11;
+    }
+    elsif $hexchar eq 'c' {
+	$num = 12;
+    }
+    elsif $hexchar eq 'd' {
+	$num = 13;
+    }
+    elsif $hexchar eq 'e' {
+	$num = 14;
+    }
+    elsif $hexchar eq 'f' {
+	$num = 15;
+    }
+    else {
+	fail "FATAL: \$hexchar '$hexchar' is unknown";
+    }
+    return $num;
+}
+
+sub hex2decimal($hex) is export {
+    my @chars = $hex.comb;
+    @chars .= reverse;
+    my $decimal = 0;
+    my $power = 0;
+    for @chars -> $c {
+        $decimal += hexchar2decimal($c) * 16 ** $power;
+	++$power;
+    }
+    return $decimal;
+}
+
+sub bin2decimal($bin) is export {
+    my @bits = $bin.comb;
+    @bits .= reverse;
+    my $decimal = 0;
+    my $power = 0;
+    for @bits -> $bit {
+        $decimal += $bit * 2 ** $power;
+	++$power;
+    }
+    return $decimal;
+}
+
+sub bin2hex($bin, $len?) is export {
+    my $decimal = bin2decimal($bin);
+    if $len {
+	return sprintf "%0*x", $len, $decimal;
+    }
+    else {
+	return sprintf "%x", $decimal;
+    }
+}
 
 =begin pod
 #------------------------------------------------------------------------------
