@@ -1,0 +1,4 @@
+remove type constraints from ip type check funcs
+
+use loop construct in places with explicit list for statements
+
