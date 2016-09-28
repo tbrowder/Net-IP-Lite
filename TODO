@@ -4,5 +4,4 @@ use loop construct in places with explicit list for statements
 
 clean up code and pod
 
-
-
+get compress working for ipv6
