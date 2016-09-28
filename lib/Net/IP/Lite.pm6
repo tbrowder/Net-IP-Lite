@@ -8,6 +8,10 @@ my $debug = 0;
 # Params            : bit string, IP version
 # Returns           : IP address on success, undef otherwise
 sub ip-bintoip($binip is copy, $ip_version) is export {
+    unless $binip ~~ /^ <[01]>+ $/ {
+        warn "non-binary digits in '$binip'\n";
+        return;
+    }
 
     # Define normal size for address
     my $len = ip-iplengths($ip_version);
