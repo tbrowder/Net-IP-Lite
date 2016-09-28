@@ -12,7 +12,7 @@ ok ip-is-ipv4('10.10'),       '2 octets';
 ok ip-is-ipv4('10'),          '1 octet';
 
 # not valid
-nok ip-is-ipv4('a'),              'no letters allowed';
+dies-ok { ip-is-ipv4('a') };
 nok ip-is-ipv4('10.10.10.10.10'), 'too many octets';
 
 # valid
@@ -22,7 +22,7 @@ is ip-get-version('1.2.3'),   '4', 'ipv4?';
 is ip-get-version('1.2.3.4'), '4', 'ipv4?';
 
 # not valid
-is ip-get-version('a.2.3.4'),   '0', 'ipv4?';
+dies-ok { ip-get-version('a.2.3.4') };
 is ip-get-version('1.2.3.4.5'), '0', 'ipv4?';
 
 # valid

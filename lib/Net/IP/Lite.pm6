@@ -7,14 +7,11 @@ my $debug = 0;
 # Purpose           : Transform a bit string into an IP address
 # Params            : bit string, IP version
 # Returns           : IP address on success, undef otherwise
-sub ip-bintoip($binip is copy, $ip_version) is export {
-    unless $binip ~~ /^ <[01]>+ $/ {
-        warn "non-binary digits in '$binip'\n";
-        return;
-    }
+sub ip-bintoip($binip is copy where /^<[01]>+$/,
+               $ip-version where /^<[46]>?$/) is export {
 
     # Define normal size for address
-    my $len = ip-iplengths($ip_version);
+    my $len = ip-iplengths($ip-version);
 
     if $len < $binip.chars {
         warn "Invalid IP length ({$binip.chars}, should be $len) for binary IP $binip\n" if $debug;
@@ -25,7 +22,7 @@ sub ip-bintoip($binip is copy, $ip_version) is export {
     $binip = '0' x ($len - $binip.chars) ~ $binip;
 
     # IPv4
-    if $ip_version == 4 {
+    if $ip-version == 4 {
         #return join '.', unpack('C4C4C4C4', pack('B32', $binip));
 	# split into individual bits
 	my @c = $binip.comb;
@@ -37,7 +34,7 @@ sub ip-bintoip($binip is copy, $ip_version) is export {
 	    # get the next 8 bits
 	    my $byte = join '', @c[$i..$i+7];
 	    # convert next 8 bits to decimal
-	    my $decimal = bin2decimal($byte);
+	    my $decimal = bin2dec($byte);
   	    $ip ~= $decimal;
 	}
 	return $ip;
@@ -68,12 +65,7 @@ sub ip-bintoip($binip is copy, $ip_version) is export {
 # Purpose           : Compress an IPv6 address
 # Params            : IP, IP version
 # Returns           : Compressed IP or undef (problem)
-sub ip-compress-address($ip is copy, $ip-version) is export {
-
-    unless ($ip-version) {
-        warn "Cannot determine IP version for $ip\n" if $debug;
-        return;
-    }
+sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
     # Just return if IP is IPv4
     return $ip if $ip-version == 4;
@@ -165,7 +157,7 @@ sub ip-iptobin($ip is copy, $ipversion) is export {
     # convert each 4-bit hex digit to 4-bit binary, and combine into the ip
     my $binip = '';
     for @c -> $c {
-	$binip ~= hexchar2binary($c);
+	$binip ~= hexchar2bin($c);
     }
     # Check binary size
     my $nbits = $binip.chars;
@@ -216,12 +208,7 @@ sub ip-get-version($ip) is export {
 # Purpose           : Expand an address from compact notation
 # Params            : IP address, IP version
 # Returns           : expanded IP address or undef on failure
-sub ip-expand-address($ip is copy, $ip-version) is export {
-
-    unless $ip-version {
-        warn "Cannot determine IP version for $ip\n" if $debug;
-        return;
-    }
+sub ip-expand-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
     # IPv4 : add .0 for missing quads
     if $ip-version == 4 {
@@ -324,12 +311,7 @@ sub ip-expand-address($ip is copy, $ip-version) is export {
 # Purpose           : Check if an IP address is version 4
 # Params            : IP address
 # Returns           : True (yes) or False (no)
-sub ip-is-ipv4($ip is copy) is export {
-    # Check for invalid chars
-    unless $ip ~~ /^ <[\d\.]>+ $/ {
-        warn "Invalid chars in IP '$ip'\n" if $debug > 1;
-        return False;
-    }
+sub ip-is-ipv4($ip is copy where /^<[\d\.]>+$/) is export {
 
     if $ip ~~ /^ '.' / {
         warn "Invalid IP $ip - starts with a dot\n" if $debug;
@@ -444,7 +426,7 @@ sub count-substrs($ip, $substr) {
 }
 
 sub hexchar2bin($hexchar) is export {
-    my $decimal = hexchar2decimal($hexchar);
+    my $decimal = hexchar2dec($hexchar);
     return sprintf "%04b", $decimal;
 }
 
@@ -522,7 +504,7 @@ sub bin2dec($bin) is export {
 }
 
 sub bin2hex($bin, $len?) is export {
-    my $decimal = bin2decimal($bin);
+    my $decimal = bin2dec($bin);
     if $len {
 	return sprintf "%0*x", $len, $decimal;
     }
