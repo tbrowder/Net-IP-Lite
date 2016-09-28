@@ -439,12 +439,12 @@ sub count-substrs($ip, $substr) {
     return $nsubstrs;
 }
 
-sub hexchar2binary($hexchar) is export {
+sub hexchar2bin($hexchar) is export {
     my $decimal = hexchar2decimal($hexchar);
     return sprintf "%04b", $decimal;
 }
 
-sub hexchar2decimal($hexchar is copy) is export {
+sub hexchar2dec($hexchar is copy) is export {
     fail "FATAL: \$hexchar = '$hexchar' has > 1 char" if $hexchar.chars != 1;
     my $num;
     $hexchar .= lc;
@@ -477,19 +477,35 @@ sub hexchar2decimal($hexchar is copy) is export {
     return $num;
 }
 
-sub hex2decimal($hex) is export {
+sub hex2dec($hex) is export {
     my @chars = $hex.comb;
     @chars .= reverse;
     my $decimal = 0;
     my $power = 0;
     for @chars -> $c {
-        $decimal += hexchar2decimal($c) * 16 ** $power;
+        $decimal += hexchar2dec($c) * 16 ** $power;
 	++$power;
     }
     return $decimal;
 }
 
-sub bin2decimal($bin) is export {
+sub hex2bin($hex, $len?) is export {
+    my @chars = $hex.comb;
+    my $bin = '';
+    for @chars -> $c {
+        $bin ~= hexchar2bin($c);
+    }
+    if $len && $len > $bin.chars {
+	my $s = '0' x ($len - $bin.chars);
+	$bin ~= $s ~ $bin;
+    }
+    return $bin;
+}
+
+sub dec2bin($dec, $len?) {
+}
+
+sub bin2dec($bin) is export {
     my @bits = $bin.comb;
     @bits .= reverse;
     my $decimal = 0;
