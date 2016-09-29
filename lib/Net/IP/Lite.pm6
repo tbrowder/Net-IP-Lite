@@ -18,12 +18,23 @@ BEGIN {
 # Params            : IP address, IP version
 # Returns           : Reversed IP address on success, undef otherwise
 sub ip-reverse-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
-    $ip = ip-remove-leading-zeroes($ip, $ip-version);
-    my $sep = $ip-version == 4 ?? '.' !! ':';
-    my @quads = split $sep, $ip;
-    @quads .= reverse;
 
-    $ip = join '.', @quads;
+    my $sep = $ip-version == 4 ?? '.' !! ':';
+
+    my @fields;
+    if $ip-version == 4 {
+        $ip = ip-remove-leading-zeroes($ip, $ip-version);
+        @fields = split $sep, $ip;
+    }
+    else {
+        $ip = ip-expand-address($ip, 6);
+        $ip ~~ s:g/ $sep //;
+        @fields = $ip.comb;
+    }
+  
+    @fields .= reverse;
+    $ip = join '.', @fields;
+
     return $ip;
 }
 
