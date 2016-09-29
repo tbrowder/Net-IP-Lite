@@ -5,17 +5,19 @@ export all subs (and test them)
 
 make starting version 1.0.0 (but consider a beta release with ver < 1)
 
+separate tests into apprpriate files
+
 ensure the :auth and :ver adverbs are in place
 
 put base conversion and other utility functions in separate export
-  category: util?
+  category: util
 
-complete two new base conversion functions
+complete two new base conversion functions (DONE)
 
 for base conversions (except single-character ones) make sure
-  generated size is okay (pad left with zeroes if necessary)
+  generated size is okay (pad left with zeroes if necessary) (DONE)
 
-add length capability where warranted (add tests)
+add length capability where warranted (add tests) (DONE)
 
 add param constraints where appropriate
   (particularly in utility functions)
