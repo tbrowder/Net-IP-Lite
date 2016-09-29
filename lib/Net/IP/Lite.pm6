@@ -532,12 +532,12 @@ sub hexchar2bin($hexchar where m:i/<[a..f\d]>$/) is export {
 }
 
 sub hexchar2dec($hexchar is copy where m:i/^<[a..f\d]>$/) is export {
-    my $num;
+    my Int $num;
 
     $hexchar .= lc;
     if $hexchar ~~ /^ \d+ $/ {
 	# 0..9
-	$num = $hexchar;
+	$num = +$hexchar;
     }
     elsif $hexchar eq 'a' {
 	$num = 10;
@@ -563,19 +563,22 @@ sub hexchar2dec($hexchar is copy where m:i/^<[a..f\d]>$/) is export {
     return $num;
 }
 
-sub hex2dec($hex where m:i/^<[a..f\d]>+$/) is export {
+sub hex2dec($hex where m:i/^<[a..f\d]>+$/, Int $len where {$len >= 0} = 0) is export(:util) {
     my @chars = $hex.comb;
     @chars .= reverse;
-    my $decimal = 0;
+    my Int $decimal = 0;
     my $power = 0;
     for @chars -> $c {
         $decimal += hexchar2dec($c) * 16 ** $power;
 	++$power;
     }
+    if $len && $len > $decimal.chars {
+	return sprintf "%0*d", $len, $decimal;
+    }
     return $decimal;
 }
 
-sub hex2bin($hex where m:i/^<[a..f\d]>+$/, $len?) is export {
+sub hex2bin($hex where m:i/^<[a..f\d]>+$/, Int $len where {$len >= 0} = 0) is export {
     my @chars = $hex.comb;
     my $bin = '';
     for @chars -> $c {
@@ -588,10 +591,25 @@ sub hex2bin($hex where m:i/^<[a..f\d]>+$/, $len?) is export {
     return $bin;
 }
 
-sub dec2bin($dec, $len?) {
+sub dec2hex(Int $dec where $dec > 0, Int $len where {$len >= 0} = 0) is export(:util) {
+    my $hex = sprintf "%x", $dec;
+    if $len && $len > $hex.chars {
+	my $s = '0' x ($len - $hex.chars);
+	$hex ~= $s ~ $hex;
+    }
+    return $hex;
 }
 
-sub bin2dec($bin) is export {
+sub dec2bin(Int $dec where $dec > 0, Int $len where {$len >= 0} = 0) is export(:util) {
+    my $bin = sprintf "%b", $dec;
+    if $len && $len > $bin.chars {
+	my $s = '0' x ($len - $bin.chars);
+	$bin ~= $s ~ $bin;
+    }
+    return $bin;
+}
+
+sub bin2dec($bin where /^<[01]>+$/, Int $len where {$len >= 0} = 0) is export(:util) {
     my @bits = $bin.comb;
     @bits .= reverse;
     my $decimal = 0;
@@ -600,10 +618,14 @@ sub bin2dec($bin) is export {
         $decimal += $bit * 2 ** $power;
 	++$power;
     }
+    if $len && $len > $decimal.chars {
+	my $s = '0' x ($len - $decimal.chars);
+	$decimal = $s ~ $decimal;
+    }
     return $decimal;
 }
 
-sub bin2hex($bin, $len?) is export {
+sub bin2hex($bin where /^<[01]>+$/, Int $len where {$len >= 0} = 0) is export {
     my $decimal = bin2dec($bin);
     if $len {
 	return sprintf "%0*x", $len, $decimal;
