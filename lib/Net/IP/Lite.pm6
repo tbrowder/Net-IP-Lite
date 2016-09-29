@@ -404,6 +404,8 @@ sub ip-expand-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 # Params            : IP address
 # Returns           : True (yes) or False (no)
 sub ip-is-ipv4($ip is copy) is export {
+    # we don't use a constraint on the input here so we
+    # can report specific problems for debugging
 
     unless $ip ~~ /^ <[\d\.]>+ $/ {
         warn "Invalid characters in IP '$ip'\n" if $DEBUG;
@@ -455,16 +457,18 @@ sub ip-is-ipv4($ip is copy) is export {
 # Params            : IP address
 # Returns           : True (yes) or False (no)
 sub ip-is-ipv6($ip is copy) is export {
+    # we don't use a constraint on the input here so we
+    # can report specific problems for debugging
+
     # Count octets
     # IPv4 must have from 1 to 8 octets (at least one colon)
-    #my $n = ($ip ~~ tr/:/:/);
     my $n = count-substrs($ip, ':');
     return False unless $n > 0 and $n < 8;
 
     # $k is a counter
     my $k;
 
-    for split /':'/, $ip {
+    for split ':', $ip {
         ++$k;
 
         # Empty octet ?
@@ -522,16 +526,15 @@ sub count-substrs($ip, $substr) {
     return $nsubstrs;
 }
 
-sub hexchar2bin($hexchar) is export {
+sub hexchar2bin($hexchar where m:i/<[a..f\d]>$/) is export {
     my $decimal = hexchar2dec($hexchar);
     return sprintf "%04b", $decimal;
 }
 
-sub hexchar2dec($hexchar is copy) is export {
-    fail "FATAL: \$hexchar = '$hexchar' has > 1 char" if $hexchar.chars != 1;
+sub hexchar2dec($hexchar is copy where m:i/^<[a..f\d]>$/) is export {
     my $num;
-    $hexchar .= lc;
 
+    $hexchar .= lc;
     if $hexchar ~~ /^ \d+ $/ {
 	# 0..9
 	$num = $hexchar;
@@ -560,7 +563,7 @@ sub hexchar2dec($hexchar is copy) is export {
     return $num;
 }
 
-sub hex2dec($hex) is export {
+sub hex2dec($hex where m:i/^<[a..f\d]>+$/) is export {
     my @chars = $hex.comb;
     @chars .= reverse;
     my $decimal = 0;
@@ -572,7 +575,7 @@ sub hex2dec($hex) is export {
     return $decimal;
 }
 
-sub hex2bin($hex, $len?) is export {
+sub hex2bin($hex where m:i/^<[a..f\d]>+$/, $len?) is export {
     my @chars = $hex.comb;
     my $bin = '';
     for @chars -> $c {

@@ -48,7 +48,7 @@ Returns           : reversed IP address or the empty string ('') on failure
 
 =back
 
-=head2 Additional Functions Exported with Named Parameter C<:internal>
+=head2 Additional Functions Exported with Named Parameter C<:util>
 
 The following functions are used internally by the default exported
 functions.  Users should not normally need them.
@@ -57,7 +57,7 @@ functions.  Users should not normally need them.
 
 =over
 
-=item ip-get-version export(:internal)
+=item ip-get-version export(:util)
 
 Purpose           : Get an IP version
 
@@ -67,7 +67,7 @@ Returns           : 4, 6, or 0 (don't know)
 
   my $ipver = ip-get-version($ip);
 
-=item ip-is-ipv4 export(:internal)
+=item ip-is-ipv4 export(:util)
 
 Purpose           : Check if an IP address is version 4
 
@@ -77,7 +77,7 @@ Returns           : True or False
 
   my $is-ipv4 = ip-is-ipv4($ip);
 
-=item ip-is-ipv6 export(:internal)
+=item ip-is-ipv6 export(:util)
 
 Purpose           : Check if an IP address is version 6
 
@@ -88,6 +88,11 @@ Returns           : True or False
   my $is-ipv6 = ip-is-ipv6($ip);
 
 =back
+
+All functions may be exported if desired:
+
+  use Net::IP::Lite :ALL;
+
 
 =head2 Limitations
 
