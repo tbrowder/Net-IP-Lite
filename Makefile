@@ -10,7 +10,7 @@ EARLYFAIL := PERL6_TEST_DIE_ON_FAIL=0
 # set below for 0 for no effect and 1 to run Test::META
 TA := TEST_AUTHOR=1
 
-.PHONY: test bad good
+.PHONY: test bad good doc
 
 default: test
 
@@ -33,3 +33,11 @@ good:
 	for f in $(GOODTESTS) ; do \
 	    $(DEBUG) $(TA) $(EARLYFAIL) PERL6LIB=$(LIBPATH) prove -v --exec=$(PERL6) $$f ; \
 	done
+
+# generate a man page and a PDF doc from pod; requires:
+#   Perl 6 module:  Pod::To::Markdown
+#   Debian packages: texlive-latex-base texlive-latex-recommended pandoc
+docs:
+	    perl6 --doc=Markdown lib/Net/IP/Lite.pm6 > Net-IP-Lite.md
+	    pandoc -s -t man Net-IP-Lite.md -o Net-IP-Lite.1
+	    pandoc Net-IP-Lite.md --latex-engine=pdflatex -o Net-IP-Lite.pdf
