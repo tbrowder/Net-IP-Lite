@@ -1,6 +1,31 @@
 unit module Net::IP::Lite:ver<1.0.0>;
 
-my $debug = 0;
+# export a debug var
+
+our $DEBUG = False;
+BEGIN {
+    if %*ENV<NET_IP_LITE_DEBUG> {
+	$DEBUG = True;
+    }
+    else {
+	$DEBUG = False;
+    }
+}
+
+#------------------------------------------------------------------------------
+# Subroutine ip-reverse-address
+# Purpose           : Reverse an IP address, use dots for separators for all types
+# Params            : IP address, IP version
+# Returns           : Reversed IP address on success, undef otherwise
+sub ip-reverse-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
+    $ip = ip-remove-leading-zeroes($ip, $ip-version);
+    my $sep = $ip-version == 4 ?? '.' !! ':';
+    my @quads = split $sep, $ip;
+    @quads .= reverse;
+
+    $ip = join '.', @quads;
+    return $ip;
+}
 
 #------------------------------------------------------------------------------
 # Subroutine ip-bintoip
@@ -14,7 +39,7 @@ sub ip-bintoip($binip is copy where /^<[01]>+$/,
     my $len = ip-iplengths($ip-version);
 
     if $len < $binip.chars {
-        warn "Invalid IP length ({$binip.chars}, should be $len) for binary IP $binip\n" if $debug;
+        warn "Invalid IP length ({$binip.chars}, should be $len) for binary IP $binip\n" if $DEBUG;
         return;
     }
 
@@ -29,7 +54,8 @@ sub ip-bintoip($binip is copy where /^<[01]>+$/,
 
 	# convert each 8-bit octet to decimal and combine into the ip
 	my $ip = '';
-	for 0, 8, 16, 24 -> $i {
+	#for 0, 8, 16, 24 -> $i {
+	loop (my $i = 0; $i < 32; $i += 8) {
 	    $ip ~= '.' if $i;
 	    # get the next 8 bits
 	    my $byte = join '', @c[$i..$i+7];
@@ -48,7 +74,8 @@ sub ip-bintoip($binip is copy where /^<[01]>+$/,
 
     # convert each 16-bit field to 4 hex chars and combine into the ip
     my $ip = '';
-    for 0, 16, 32, 48, 64, 80, 96, 112 -> $i {
+    #for 0, 16, 32, 48, 64, 80, 96, 112 -> $i {
+    loop (my $i = 0; $i < 128; $i += 16) {
 	$ip ~= ':' if $i;
 	# get the next 16 bits
 	my $half-word = join '', @c[$i..$i+15];
@@ -59,27 +86,19 @@ sub ip-bintoip($binip is copy where /^<[01]>+$/,
     return $ip;
 } # ip-bintoip
 
+sub ip-remove-leading-zeroes($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
-#------------------------------------------------------------------------------
-# Subroutine ip_compress_address
-# Purpose           : Compress an IPv6 address
-# Params            : IP, IP version
-# Returns           : Compressed IP or undef (problem)
-sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
+    # IPv6 addresses must be expanded first
+    $ip = ip-expand-address($ip, $ip-version) if $ip-version == 6;
 
-    # Just return if IP is IPv4
-    return $ip if $ip-version == 4;
+    my $sep = $ip-version == 4 ?? '.' !! ':';
 
-    # already compressed addresses must be expanded first
-    $ip = ip-expand-address($ip, $ip-version);
-
-    my @quads = split ':', $ip;
-
+    my @quads = split $sep, $ip;
     # Remove leading 0s: 0034 -> 34; 0000 -> 0
     for @quads <-> $q {
 	my @q = $q.comb;
 	while +@q {
-	    last if @q[0] != 0;
+	    last if @q[0] ne '0';
 	    shift @q;
 	}
 	if !+@q {
@@ -91,21 +110,94 @@ sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
 	$q = 0 if !+@q;
     }
+    $ip = join $sep, @quads;
 
-    say "DEBUG";
-    say @quads.perl;
+    return $ip;
+}
 
-    my $reg = '';
+#------------------------------------------------------------------------------
+# Subroutine ip-compress-address
+# Purpose           : Compress an IPv6 address
+# Params            : IP, IP version
+# Returns           : Compressed IP or undef (problem)
+sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
+
+    # already compressed addresses must be expanded first
+    $ip = ip-expand-address($ip, $ip-version) if $ip-version == 6;
+
+    $ip = ip-remove-leading-zeroes($ip, $ip-version);
+
+    if $ip-version == 4 {
+        return $ip;
+    }
+    
+=begin pod
+    # Just return if IP is IPv4
+    return $ip if $ip-version == 4;
+=end pod
+
+=begin pod
+    my @quads = split ':', $ip;
+    # Remove leading 0s: 0034 -> 34; 0000 -> 0
+    for @quads <-> $q {
+	my @q = $q.comb;
+	while +@q {
+	    last if @q[0] ne '0';
+	    shift @q;
+	}
+	if !+@q {
+	    $q = 0;
+	}
+	else {
+	    $q = join '', @q;
+	}
+
+	$q = 0 if !+@q;
+    }
+    $ip = join ':', @quads;
+=end pod
+
+    $ip = ip-remove-leading-zeroes($ip, $ip-version);
 
     # Find the longest :0:0: sequence
-    #my $longest-seq = 0;
-    #my $longest-seq-index;
-    while 0 {
-
+    my $long-seq;
+    my $long-seq-idx;
+    loop (my $i = 0; $i < 7; ++$i) {
+       my $s = ':';
+       $s ~= '0:' x $i;
+       # search
+       my $idx = index $ip, $s;
+       if $idx.defined {
+           if !$long-seq.defined { 
+               $long-seq     = $s.chars;
+               $long-seq-idx = $idx;
+           }
+           elsif $s.chars > $long-seq {
+               $long-seq     = $s.chars;
+               $long-seq-idx = $idx;
+           }
+       } 
     }
 
-    # Replace sequence by '::'
+    #say "DEBUG";
+    #say $ip;
 
+    # Replace longest sequence by '::'
+    if $long-seq-idx.defined {
+        # extract the two parts before and after the sequence
+        my $ip0 = substr $ip, 0, $long-seq-idx + 1;
+        my $ip1 = substr $ip, $long-seq-idx + $long-seq - 1;
+
+        #say "DEBUG";
+        #say "ip0 '$ip0'";
+        #say "ip1 '$ip1'";
+
+        # then combine the two parts and we have the new, compressed ip
+        $ip = $ip0 ~ $ip1;
+        #say "DEBUG";
+        #say $ip;
+    }
+    
     return $ip;
 
 } # ip-compress-address
@@ -131,7 +223,7 @@ sub ip-iptobin($ip is copy, $ipversion) is export {
 	    return $binip;
 	}
 	else {
-	    warn "binip has $nbits bits, should be 32\n" if $debug;
+	    warn "binip has $nbits bits, should be 32\n" if $DEBUG;
 	    return;
 	}
     }
@@ -143,7 +235,7 @@ sub ip-iptobin($ip is copy, $ipversion) is export {
 
     # Check hex size
     unless $ip.chars == 32 {
-        warn "Bad IP address $ip\n" if $debug;
+        warn "Bad IP address $ip\n" if $DEBUG;
         return;
     }
 
@@ -165,7 +257,7 @@ sub ip-iptobin($ip is copy, $ipversion) is export {
 	return $binip;
     }
     else {
-	warn "binip has $nbits bits, should be 128\n" if $debug;
+	warn "binip has $nbits bits, should be 128\n" if $DEBUG;
 	return;
     }
 
@@ -216,7 +308,7 @@ sub ip-expand-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
         # check number of quads
         if +@quads > 4 {
-            warn "Not a valid IPv4 address $ip\n" if $debug;
+            warn "Not a valid IPv4 address $ip\n" if $DEBUG;
             return;
         }
         my @clean_quads;
@@ -224,7 +316,7 @@ sub ip-expand-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
             #check quad data
             if $q !~~ /^ \d ** 1..3 $/ {
-                warn "Not a valid IPv4 address $ip\n" if $debug;
+                warn "Not a valid IPv4 address $ip\n" if $DEBUG;
                 return;
             }
 
@@ -249,7 +341,7 @@ sub ip-expand-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
     # Keep track of ::
     my $num-double-colons = count-substrs($ip, '::');
     if $num-double-colons > 1 {
-        warn "Too many :: in ip\n" if $debug;
+        warn "Too many :: in ip\n" if $DEBUG;
         return;
     }
     # mark the double colons
@@ -311,15 +403,20 @@ sub ip-expand-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 # Purpose           : Check if an IP address is version 4
 # Params            : IP address
 # Returns           : True (yes) or False (no)
-sub ip-is-ipv4($ip is copy where /^<[\d\.]>+$/) is export {
+sub ip-is-ipv4($ip is copy) is export {
+
+    unless $ip ~~ /^ <[\d\.]>+ $/ {
+        warn "Invalid characters in IP '$ip'\n" if $DEBUG;
+        return False;
+    }
 
     if $ip ~~ /^ '.' / {
-        warn "Invalid IP $ip - starts with a dot\n" if $debug;
+        warn "Invalid IP $ip - starts with a dot\n" if $DEBUG;
         return False;
     }
 
     if $ip ~~ / '.' $/ {
-        warn "Invalid IP $ip - ends with a dot\n" if $debug;
+        warn "Invalid IP $ip - ends with a dot\n" if $DEBUG;
         return False;
     }
 
@@ -330,21 +427,21 @@ sub ip-is-ipv4($ip is copy where /^<[\d\.]>+$/) is export {
     # IPv4 must have from 1 to 4 quads
     my $n = count-substrs($ip, '.');
     unless $n >= 0 and $n < 4 {
-        warn "Invalid IP address $ip ($n dots found)\n" if $debug > 1;
+        warn "Invalid IP address $ip ($n dots found)\n" if $DEBUG > 1;
         return False;
     }
-    warn "DEBUG: found $n dots\n" if $debug;
+    warn "DEBUG: found $n dots\n" if $DEBUG;
 
     # Check for empty quads
     if $ip ~~ / '..' / {
-        warn "Empty quad in IP address $ip\n" if $debug;
+        warn "Empty quad in IP address $ip\n" if $DEBUG;
         return False;
     }
 
     for split /'.'/, $ip {
         # Check for invalid quads
         unless $_ >= 0 and $_ < 256 {
-            warn "Invalid quad in IP address $ip - $_\n" if $debug;
+            warn "Invalid quad in IP address $ip - $_\n" if $DEBUG;
             return False;
         }
     }
@@ -382,32 +479,32 @@ sub ip-is-ipv6($ip is copy) is export {
             next;
         }
 
-        warn "Invalid IP address $ip\n" if $debug;
+        warn "Invalid IP address $ip\n" if $DEBUG;
         return False;
     }
 
     # Does the IP address start with a single : ?
     if $ip ~~ /^ ':' <-[\:]> / {
-        warn "Invalid address $ip (starts with :)\n" if $debug;
+        warn "Invalid address $ip (starts with :)\n" if $DEBUG;
         return False;
     }
 
     # Does the IP address finish with a single : ?
     if $ip ~~ / <-[\:]> ':' $/ {
-        warn "Invalid address $ip (ends with :)\n" if $debug;
+        warn "Invalid address $ip (ends with :)\n" if $DEBUG;
         return False;
     }
 
     # Does the IP address have more than one '::' pattern ?
     my $ncolonpairs = count-substrs($ip, '::');
     if $ncolonpairs > 1 {
-        warn "Invalid address $ip (More than one :: pattern)\n" if $debug;
+        warn "Invalid address $ip (More than one :: pattern)\n" if $DEBUG;
         return False;
     }
 
     # number of octets
     if $n != 7 && $ip !~~ /'::'/ {
-        warn "Invalid number of octets $ip\n" if $debug;
+        warn "Invalid number of octets $ip\n" if $DEBUG;
         return False;
     }
 

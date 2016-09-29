@@ -1,8 +1,6 @@
 use v6;
 use Test;
 
-plan 1;
-
 constant AUTHOR = ?%*ENV<TEST_AUTHOR>; 
 
 if AUTHOR { 
@@ -14,3 +12,5 @@ else {
      skip-rest "Skipping author test";
      exit;
 }
+
+done-testing;

@@ -1,7 +1,25 @@
-remove type constraints from ip type check funcs
 
-use loop construct in places with explicit list for statements
+replace warn and fail with diag?
+
+complete two new base conversion functions
+
+for base conversions make sure generated size is okay (pad left with
+  zeroes if necessary)
+
+add length capability where warranted (add tests)
 
 clean up code and pod
 
-get compress working for ipv6
+==================================
+DONE:
+==================================
+
+finish reverse function; add tests (DONE)
+
+get compress working for ipv6 (DONE)
+
+add user-accessible DEBUG var (DONE)
+
+use loop construct in places with explicit list for statements (DONE)
+
+remove type constraints from ip type check funcs (DONE)

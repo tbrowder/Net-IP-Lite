@@ -14,9 +14,15 @@ a subset of its basic IPv4 and IPv6 address manipulation functions.
 
   use Net::IP::Lite;
 
-For debugging, set the module's $DEBUG variable:
+For debugging, use one the following methods:
 
-  $Net::IP::Lite::DEBUG = True;
+  set the module's $DEBUG variable:
+
+    $Net::IP::Lite::DEBUG = True;
+
+  set the environment variable:
+
+    NET_IP_LITE_DEBUG=1
 
 =over
 
