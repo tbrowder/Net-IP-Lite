@@ -2,15 +2,13 @@ REQUIREMENTS FOR RELEASE
 ------------------------
 
 decided: use a README.md for now, all pod in the module able
-  to be extracted to pdf
+  to be extracted to pdf (note that README.md takes precedence as
+  far as the one used to auto render; all others do render when
+  selected
 
 separate tests into appropriate files
 
-ensure the :auth and :ver adverbs are in place
-
 change sub comments to pod, ensure all subs are described
-
-put util functions after all default export functions
 
 clean up code and pod
 
@@ -19,6 +17,10 @@ add Makefile target to generate text from pod in the module
 ==================================
 DONE:
 ==================================
+
+put util functions after all default export functions (DONE)
+
+ensure the :auth and :ver adverbs are in place (DONE)
 
 make starting version 1.0.0 (but consider a beta release with ver < 1) (DONE)
 
