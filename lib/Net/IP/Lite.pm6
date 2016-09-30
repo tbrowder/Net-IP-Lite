@@ -31,7 +31,7 @@ sub ip-reverse-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
         $ip ~~ s:g/ $sep //;
         @fields = $ip.comb;
     }
-  
+
     @fields .= reverse;
     $ip = join '.', @fields;
 
@@ -59,7 +59,6 @@ sub ip-bintoip($binip is copy where /^<[01]>+$/,
 
     # IPv4
     if $ip-version == 4 {
-        #return join '.', unpack('C4C4C4C4', pack('B32', $binip));
 	# split into individual bits
 	my @c = $binip.comb;
 
@@ -76,9 +75,6 @@ sub ip-bintoip($binip is copy where /^<[01]>+$/,
 	}
 	return $ip;
     }
-
-    # IPv6
-    #return join(':', unpack('H4H4H4H4H4H4H4H4', pack('B128', $binip)));
 
     # split into individual bits
     my @c = $binip.comb;
@@ -141,32 +137,6 @@ sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
     if $ip-version == 4 {
         return $ip;
     }
-    
-=begin pod
-    # Just return if IP is IPv4
-    return $ip if $ip-version == 4;
-=end pod
-
-=begin pod
-    my @quads = split ':', $ip;
-    # Remove leading 0s: 0034 -> 34; 0000 -> 0
-    for @quads <-> $q {
-	my @q = $q.comb;
-	while +@q {
-	    last if @q[0] ne '0';
-	    shift @q;
-	}
-	if !+@q {
-	    $q = 0;
-	}
-	else {
-	    $q = join '', @q;
-	}
-
-	$q = 0 if !+@q;
-    }
-    $ip = join ':', @quads;
-=end pod
 
     $ip = ip-remove-leading-zeroes($ip, $ip-version);
 
@@ -179,7 +149,7 @@ sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
        # search
        my $idx = index $ip, $s;
        if $idx.defined {
-           if !$long-seq.defined { 
+           if !$long-seq.defined {
                $long-seq     = $s.chars;
                $long-seq-idx = $idx;
            }
@@ -187,11 +157,8 @@ sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
                $long-seq     = $s.chars;
                $long-seq-idx = $idx;
            }
-       } 
+       }
     }
-
-    #say "DEBUG";
-    #say $ip;
 
     # Replace longest sequence by '::'
     if $long-seq-idx.defined {
@@ -208,7 +175,7 @@ sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
         #say "DEBUG";
         #say $ip;
     }
-    
+
     return $ip;
 
 } # ip-compress-address
@@ -222,7 +189,6 @@ sub ip-iptobin($ip is copy, $ipversion) is export {
 
     # v4 -> return 32-bit array
     if $ipversion == 4 {
-        #return unpack('B32', pack('C4C4C4C4', split(/\./, $ip)));
 	my @octets = split '.', $ip;
 	my $binip = '';
 	for @octets -> $decimal {
@@ -252,7 +218,6 @@ sub ip-iptobin($ip is copy, $ipversion) is export {
 
 
     # v6 -> return 128-bit array
-    #return unpack('B128', pack('H32', $ip));
     # split into individual hex chars
     $ip.lc;
     my @c = $ip.comb;
@@ -343,7 +308,6 @@ sub ip-expand-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 	    push @clean_quads, '0';
 	    ++$nq;
 	}
-        #return (join '.', @clean_quads[ 0 .. 3 ]);
         return (join '.', @clean_quads);
     }
 
@@ -527,7 +491,7 @@ sub ip-is-ipv6($ip is copy) is export {
     return True;
 } # ip-is-ipv6
 
-sub count-substrs($ip, $substr) {
+sub count-substrs($ip, $substr) is export(:util) {
     my $nsubstrs = 0;
     my $idx = index $ip, $substr;
     while $idx.defined {
@@ -537,12 +501,12 @@ sub count-substrs($ip, $substr) {
     return $nsubstrs;
 }
 
-sub hexchar2bin($hexchar where m:i/<[a..f\d]>$/) is export {
+sub hexchar2bin($hexchar where m:i/<[a..f\d]>$/) is export(:util) {
     my $decimal = hexchar2dec($hexchar);
     return sprintf "%04b", $decimal;
 }
 
-sub hexchar2dec($hexchar is copy where m:i/^<[a..f\d]>$/) is export {
+sub hexchar2dec($hexchar is copy where m:i/^<[a..f\d]>$/) is export(:util) {
     my Int $num;
 
     $hexchar .= lc;
@@ -589,7 +553,7 @@ sub hex2dec($hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
     return $decimal;
 }
 
-sub hex2bin($hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export {
+sub hex2bin($hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
     my @chars = $hex.comb;
     my $bin = '';
     for @chars -> $c {
@@ -636,7 +600,7 @@ sub bin2dec($bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
     return $decimal;
 }
 
-sub bin2hex($bin where /^<[01]>+$/, UInt $len = 0) is export {
+sub bin2hex($bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
     my $decimal = bin2dec($bin);
     if $len && $len > $decimal.chars {
 	my $s = '0' x ($len - $decimal.chars);
@@ -644,4 +608,3 @@ sub bin2hex($bin where /^<[01]>+$/, UInt $len = 0) is export {
     }
     return $decimal;
 }
-
