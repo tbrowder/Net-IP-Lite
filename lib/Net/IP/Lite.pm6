@@ -1,7 +1,6 @@
 unit module Net::IP::Lite:ver<0.1.0>:auth<Tom Browder (tom.browder@gmail.com)>;
 
-# export a debug var
-
+# export a debug var for usersx
 our $DEBUG = False;
 BEGIN {
     if %*ENV<NET_IP_LITE_DEBUG> {
@@ -14,9 +13,9 @@ BEGIN {
 
 #------------------------------------------------------------------------------
 # Subroutine ip-reverse-address
-# Purpose           : Reverse an IP address, use dots for separators for all types
-# Params            : IP address, IP version
-# Returns           : Reversed IP address on success, undef otherwise
+# Purpose : Reverse an IP address, use dots for separators for all types
+# Params  : IP address, IP version
+# Returns : Reversed IP address on success, undef otherwise
 sub ip-reverse-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
     my $sep = $ip-version == 4 ?? '.' !! ':';
@@ -40,9 +39,9 @@ sub ip-reverse-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
 #------------------------------------------------------------------------------
 # Subroutine ip-bintoip
-# Purpose           : Transform a bit string into an IP address
-# Params            : bit string, IP version
-# Returns           : IP address on success, undef otherwise
+# Purpose : Transform a bit string into an IP address
+# Params  : bit string, IP version
+# Returns : IP address on success, undef otherwise
 sub ip-bintoip($binip is copy where /^<[01]>+$/,
                $ip-version where /^<[46]>?$/) is export {
 
@@ -93,6 +92,11 @@ sub ip-bintoip($binip is copy where /^<[01]>+$/,
     return $ip;
 } # ip-bintoip
 
+#------------------------------------------------------------------------------
+# Subroutine ip-remove-leading-zeroes
+# Purpose :
+# Params  :
+# Returns :
 sub ip-remove-leading-zeroes($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
     # IPv6 addresses must be expanded first
@@ -124,9 +128,9 @@ sub ip-remove-leading-zeroes($ip is copy, $ip-version where /^<[46]>?$/) is expo
 
 #------------------------------------------------------------------------------
 # Subroutine ip-compress-address
-# Purpose           : Compress an IPv6 address
-# Params            : IP, IP version
-# Returns           : Compressed IP or undef (problem)
+# Purpose : Compress an IPv6 address
+# Params  : IP, IP version
+# Returns : Compressed IP or undef (problem)
 sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
     # already compressed addresses must be expanded first
@@ -166,14 +170,7 @@ sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
         my $ip0 = substr $ip, 0, $long-seq-idx + 1;
         my $ip1 = substr $ip, $long-seq-idx + $long-seq - 1;
 
-        #say "DEBUG";
-        #say "ip0 '$ip0'";
-        #say "ip1 '$ip1'";
-
         # then combine the two parts and we have the new, compressed ip
-        $ip = $ip0 ~ $ip1;
-        #say "DEBUG";
-        #say $ip;
     }
 
     return $ip;
@@ -182,9 +179,9 @@ sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
 #------------------------------------------------------------------------------
 # Subroutine ip-iptobin
-# Purpose           : Transform an IP address into a bit string
-# Params            : IP address, IP version
-# Returns           : bit string on success, undef otherwise
+# Purpose : Transform an IP address into a bit string
+# Params  : IP address, IP version
+# Returns : bit string on success, undef otherwise
 sub ip-iptobin($ip is copy, $ipversion) is export {
 
     # v4 -> return 32-bit array
@@ -219,7 +216,7 @@ sub ip-iptobin($ip is copy, $ipversion) is export {
 
     # v6 -> return 128-bit array
     # split into individual hex chars
-    $ip.lc;
+    $ip .= lc;
     my @c = $ip.comb;
 
     # convert each 4-bit hex digit to 4-bit binary, and combine into the ip
@@ -241,9 +238,9 @@ sub ip-iptobin($ip is copy, $ipversion) is export {
 
 #------------------------------------------------------------------------------
 # Subroutine ip-iplengths
-# Purpose           : Get the length in bits of an IP from its version
-# Params            : IP version
-# Returns           : Number of bits: 32, 128, 0 (don't know)
+# Purpose : Get the length in bits of an IP from its version
+# Params  : IP version
+# Returns : Number of bits: 32, 128, 0 (don't know)
 sub ip-iplengths($version) is export {
     if $version == 4 {
         return 32;
@@ -257,10 +254,10 @@ sub ip-iplengths($version) is export {
 } # ip-iplengths
 
 #------------------------------------------------------------------------------
-# Subroutine ip_get_version
-# Purpose           : Get an IP version
-# Params            : IP address
-# Returns           : 4, 6, 0 (don't know)
+# Subroutine ip-get-version
+# Purpose : Get an IP version
+# Params  : IP address
+# Returns : 4, 6, 0 (don't know)
 sub ip-get-version($ip) is export {
     # If the address does not contain any ':', maybe it's IPv4
     return '4' if $ip !~~ /\:/ and ip-is-ipv4($ip);
@@ -272,10 +269,10 @@ sub ip-get-version($ip) is export {
 } # ip-get-version
 
 #------------------------------------------------------------------------------
-# Subroutine ip_expand_address
-# Purpose           : Expand an address from compact notation
-# Params            : IP address, IP version
-# Returns           : expanded IP address or undef on failure
+# Subroutine ip-expand-address
+# Purpose : Expand an address from compact notation
+# Params  : IP address, IP version
+# Returns : expanded IP address or undef on failure
 sub ip-expand-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
     # IPv4 : add .0 for missing quads
@@ -375,9 +372,9 @@ sub ip-expand-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 
 #------------------------------------------------------------------------------
 # Subroutine ip-is-ipv4
-# Purpose           : Check if an IP address is version 4
-# Params            : IP address
-# Returns           : True (yes) or False (no)
+# Purpose : Check if an IP address is version 4
+# Params  : IP address
+# Returns : True (yes) or False (no)
 sub ip-is-ipv4($ip is copy) is export {
     # we don't use a constraint on the input here so we
     # can report specific problems for debugging
@@ -428,9 +425,9 @@ sub ip-is-ipv4($ip is copy) is export {
 
 #------------------------------------------------------------------------------
 # Subroutine ip-is-ipv6
-# Purpose           : Check if an IP address is version 6
-# Params            : IP address
-# Returns           : True (yes) or False (no)
+# Purpose : Check if an IP address is version 6
+# Params  : IP address
+# Returns : True (yes) or False (no)
 sub ip-is-ipv6($ip is copy) is export {
     # we don't use a constraint on the input here so we
     # can report specific problems for debugging
@@ -491,6 +488,15 @@ sub ip-is-ipv6($ip is copy) is export {
     return True;
 } # ip-is-ipv6
 
+#=======================================================
+# export(:util) subs below here
+#=======================================================
+
+#------------------------------------------------------------------------------
+# Subroutine
+# Purpose :
+# Params  :
+# Returns :
 sub count-substrs($ip, $substr) is export(:util) {
     my $nsubstrs = 0;
     my $idx = index $ip, $substr;
@@ -499,13 +505,23 @@ sub count-substrs($ip, $substr) is export(:util) {
 	$idx = index $ip, $substr, $idx+1;
     }
     return $nsubstrs;
-}
+} # count-substrs
 
+#------------------------------------------------------------------------------
+# Subroutine
+# Purpose :
+# Params  :
+# Returns :
 sub hexchar2bin($hexchar where m:i/<[a..f\d]>$/) is export(:util) {
     my $decimal = hexchar2dec($hexchar);
     return sprintf "%04b", $decimal;
-}
+} # hexchar2bin
 
+#------------------------------------------------------------------------------
+# Subroutine
+# Purpose :
+# Params  :
+# Returns :
 sub hexchar2dec($hexchar is copy where m:i/^<[a..f\d]>$/) is export(:util) {
     my Int $num;
 
@@ -536,8 +552,13 @@ sub hexchar2dec($hexchar is copy where m:i/^<[a..f\d]>$/) is export(:util) {
 	fail "FATAL: \$hexchar '$hexchar' is unknown";
     }
     return $num;
-}
+} # hexchar2dec
 
+#------------------------------------------------------------------------------
+# Subroutine
+# Purpose :
+# Params  :
+# Returns :
 sub hex2dec($hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
     my @chars = $hex.comb;
     @chars .= reverse;
@@ -551,8 +572,13 @@ sub hex2dec($hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
 	return sprintf "%0*d", $len, $decimal;
     }
     return $decimal;
-}
+} # hex2dec
 
+#------------------------------------------------------------------------------
+# Subroutine
+# Purpose :
+# Params  :
+# Returns :
 sub hex2bin($hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
     my @chars = $hex.comb;
     my $bin = '';
@@ -564,8 +590,13 @@ sub hex2bin($hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
 	$bin = $s ~ $bin;
     }
     return $bin;
-}
+} # hex2bin
 
+#------------------------------------------------------------------------------
+# Subroutine
+# Purpose :
+# Params  :
+# Returns :
 sub dec2hex(Int $dec where $dec > 0, UInt $len = 0) is export(:util) {
     my $hex = sprintf "%x", $dec;
     if $len && $len > $hex.chars {
@@ -573,8 +604,13 @@ sub dec2hex(Int $dec where $dec > 0, UInt $len = 0) is export(:util) {
 	$hex = $s ~ $hex;
     }
     return $hex;
-}
+} # dec2hex
 
+#------------------------------------------------------------------------------
+# Subroutine
+# Purpose :
+# Params  :
+# Returns :
 sub dec2bin(Int $dec where $dec > 0, UInt $len = 0) is export(:util) {
     my $bin = sprintf "%b", $dec;
     if $len && $len > $bin.chars {
@@ -582,8 +618,13 @@ sub dec2bin(Int $dec where $dec > 0, UInt $len = 0) is export(:util) {
 	$bin = $s ~ $bin;
     }
     return $bin;
-}
+} # dec2bin
 
+#------------------------------------------------------------------------------
+# Subroutine
+# Purpose :
+# Params  :
+# Returns :
 sub bin2dec($bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
     my @bits = $bin.comb;
     @bits .= reverse;
@@ -598,8 +639,13 @@ sub bin2dec($bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
 	$decimal = $s ~ $decimal;
     }
     return $decimal;
-}
+} # bin2dec
 
+#------------------------------------------------------------------------------
+# Subroutine
+# Purpose :
+# Params  :
+# Returns :
 sub bin2hex($bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
     my $decimal = bin2dec($bin);
     if $len && $len > $decimal.chars {
@@ -607,4 +653,4 @@ sub bin2hex($bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
 	$decimal = $s ~ $decimal;
     }
     return $decimal;
-}
+} # bin2hex
