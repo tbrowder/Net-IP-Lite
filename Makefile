@@ -38,8 +38,12 @@ good:
 #   Perl 6 module:  Pod::To::Markdown
 #   Debian packages: texlive-latex-base texlive-latex-recommended pandoc
 doc: docs
-docs:
-	    perl6 --doc=Markdown lib/Net/IP/Lite.pm6 > Net-IP-Lite.md
-	    perl6 --doc=Markdown README.pod6 > README.md
+docs: md pdf
+
+pdf: md
 	    pandoc Net-IP-Lite.md --latex-engine=pdflatex -o Net-IP-Lite.pdf
-	    pandoc README.md --latex-engine=pdflatex -o README.pdf
+	    pandoc README-0.md --latex-engine=pdflatex -o README-0.pdf
+
+md:
+	    perl6 --doc=Markdown lib/Net/IP/Lite.pm6 > Net-IP-Lite.md
+	    perl6 --doc=Markdown README.pod6 > README-0.md
