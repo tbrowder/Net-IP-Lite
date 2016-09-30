@@ -1,5 +1,6 @@
-REQUIREMENTS FOR RELEASE
-------------------------
+--------------------------------
+REQUIREMENTS FOR INITIAL RELEASE
+--------------------------------
 
 tighten arg type requirements
 
@@ -58,3 +59,10 @@ add user-accessible DEBUG var (DONE)
 use loop construct in places with explicit list for statements (DONE)
 
 remove type constraints from ip type check funcs (DONE)
+
+------------------------------------
+REQUIREMENTS FOR A FOLLOW-ON RELEASE
+------------------------------------
+
+add capability to handle CIDR notation
+
