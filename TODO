@@ -1,6 +1,9 @@
 REQUIREMENTS FOR RELEASE
 ------------------------
 
+decided: use a README.md for now, all pod in the module able
+  to be extracted to pdf
+
 make starting version 1.0.0 (but consider a beta release with ver < 1)
 
 separate tests into appropriate files
