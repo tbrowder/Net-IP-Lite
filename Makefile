@@ -34,10 +34,12 @@ good:
 	    $(DEBUG) $(TA) $(EARLYFAIL) PERL6LIB=$(LIBPATH) prove -v --exec=$(PERL6) $$f ; \
 	done
 
-# generate a man page and a PDF doc from pod; requires:
+# generate PDF docs from pod; requires:
 #   Perl 6 module:  Pod::To::Markdown
 #   Debian packages: texlive-latex-base texlive-latex-recommended pandoc
+doc: docs
 docs:
 	    perl6 --doc=Markdown lib/Net/IP/Lite.pm6 > Net-IP-Lite.md
-	    pandoc -s -t man Net-IP-Lite.md -o Net-IP-Lite.1
+	    perl6 --doc=Markdown README.pod6 > README.md
 	    pandoc Net-IP-Lite.md --latex-engine=pdflatex -o Net-IP-Lite.pdf
+	    pandoc README.md --latex-engine=pdflatex -o README.pdf
