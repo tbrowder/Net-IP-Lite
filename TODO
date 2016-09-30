@@ -4,8 +4,6 @@ REQUIREMENTS FOR RELEASE
 decided: use a README.md for now, all pod in the module able
   to be extracted to pdf
 
-make starting version 1.0.0 (but consider a beta release with ver < 1)
-
 separate tests into appropriate files
 
 ensure the :auth and :ver adverbs are in place
@@ -21,6 +19,8 @@ add Makefile target to generate text from pod in the module
 ==================================
 DONE:
 ==================================
+
+make starting version 1.0.0 (but consider a beta release with ver < 1) (DONE)
 
 add param constraints where appropriate
   (particularly in utility functions) (DONE)

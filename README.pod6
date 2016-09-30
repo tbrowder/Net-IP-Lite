@@ -1,18 +1,15 @@
-=pod
+=begin pod
 
-=encoding utf8
-
-=head2 Net::IP::Lite
+=head1 Net::IP::Lite
 
 This is a limited version of CPAN's Net::IP for Perl 6 and provides
 a subset of its basic IPv4 and IPv6 address manipulation functions.
 
-=for HTML <a href="https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6">
-          <img src="https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg?branch=master"></a>
+=for HTML
+   <a href="https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6">
+       <img src="https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg?branch=master"></a>
 
-=head2 Functions Provided by Default
-
-  use Net::IP::Lite;
+=head2 Debugging
 
 For debugging, use one the following methods:
 
@@ -24,17 +21,19 @@ For debugging, use one the following methods:
 
     NET_IP_LITE_DEBUG=1
 
-=over
+=head2 Functions Provided by Default
 
-=item ip-expand-address
+  =begin code
+  use Net::IP::Lite;
+  =end code
 
-Purpose           : Expand an address from compact notation
-
-Params            : IP address
-
-Returns           : expanded IP address or the empty string ('') on failure
-
+=item1 ip-expand-address
+=item2 Purpose           : Expand an address from compact notation
+=item2 Params            : IP address
+=item2 Returns           : expanded IP address or the empty string ('') on failure
+=begin code
   my $full-addr = ip-expand-address($ip);
+=end code
 
 =item ip-reverse-address
 
@@ -46,8 +45,6 @@ Returns           : reversed IP address or the empty string ('') on failure
 
   my $rev-addr = ip-reverse-address($ip);
 
-=back
-
 =head2 Additional Functions Exported with Named Parameter C<:util>
 
 The following functions are used internally by the default exported
@@ -55,17 +52,13 @@ functions.  Users should not normally need them.
 
   use Net::IP::Lite :internal;
 
-=over
-
 =item ip-get-version export(:util)
-
-Purpose           : Get an IP version
-
-Params            : IP address
-
-Returns           : 4, 6, or 0 (don't know)
-
+=item2 Purpose           : Get an IP version
+=item2 Params            : IP address
+=item2Returns           : 4, 6, or 0 (don't know)
+=begin code
   my $ipver = ip-get-version($ip);
+=end code
 
 =item ip-is-ipv4 export(:util)
 
@@ -87,12 +80,9 @@ Returns           : True or False
 
   my $is-ipv6 = ip-is-ipv6($ip);
 
-=back
-
 All functions may be exported if desired:
 
   use Net::IP::Lite :ALL;
-
 
 =head2 Limitations
 
@@ -148,14 +138,10 @@ the development process.  The Makefile can be tailored as desired.
 This module is indebted to the CPAN Perl IP::Net module authors for
 providing such a useful set of functions:
 
-=over
-
 =item Manuel Valente <manuel.valente@gmail.com>
 
 =item Monica Cortes Sack <mcortes@ripe.net>
 
 =item Lee Wilmot <lee@ripe.net>
 
-=back
-
-=cut
+=end pod
