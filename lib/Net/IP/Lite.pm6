@@ -97,7 +97,7 @@ sub ip-bintoip($binip is copy where /^<[01]>+$/,
 # Purpose :
 # Params  :
 # Returns :
-sub ip-remove-leading-zeroes($ip is copy, $ip-version where /^<[46]>?$/) is export {
+sub ip-remove-leading-zeroes(Str:D $ip is copy, $ip-version where /^<[46]>?$/) is export {
 
     # IPv6 addresses must be expanded first
     $ip = ip-expand-address($ip, $ip-version) if $ip-version == 6;
@@ -113,13 +113,13 @@ sub ip-remove-leading-zeroes($ip is copy, $ip-version where /^<[46]>?$/) is expo
 	    shift @q;
 	}
 	if !+@q {
-	    $q = 0;
+	    $q = '0';
 	}
 	else {
 	    $q = join '', @q;
 	}
 
-	$q = 0 if !+@q;
+	#$q = '0' if !+@q;
     }
     $ip = join $sep, @quads;
 
@@ -131,7 +131,7 @@ sub ip-remove-leading-zeroes($ip is copy, $ip-version where /^<[46]>?$/) is expo
 # Purpose : Compress an IPv6 address
 # Params  : IP, IP version
 # Returns : Compressed IP or undef (problem)
-sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
+sub ip-compress-address(Str:D $ip is copy, $ip-version where /^<[46]>?$/) is export {
 
     # already compressed addresses must be expanded first
     $ip = ip-expand-address($ip, $ip-version) if $ip-version == 6;
@@ -171,6 +171,7 @@ sub ip-compress-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
         my $ip1 = substr $ip, $long-seq-idx + $long-seq - 1;
 
         # then combine the two parts and we have the new, compressed ip
+	$ip = $ip0 ~ $ip1;
     }
 
     return $ip;
@@ -493,10 +494,10 @@ sub ip-is-ipv6($ip is copy) is export {
 #=======================================================
 
 #------------------------------------------------------------------------------
-# Subroutine
-# Purpose :
-# Params  :
-# Returns :
+# Subroutine count-substrs
+# Purpose : Count instances of a substring in a string
+# Params  : String, Substring
+# Returns : Number of substrings found
 sub count-substrs($ip, $substr) is export(:util) {
     my $nsubstrs = 0;
     my $idx = index $ip, $substr;
@@ -508,21 +509,21 @@ sub count-substrs($ip, $substr) is export(:util) {
 } # count-substrs
 
 #------------------------------------------------------------------------------
-# Subroutine
-# Purpose :
-# Params  :
-# Returns :
-sub hexchar2bin($hexchar where m:i/<[a..f\d]>$/) is export(:util) {
+# Subroutine hexchar2bin
+# Purpose : Convert a single hexadecimal character to a binary string
+# Params  : Hexadecimal character
+# Returns : Binary string
+sub hexchar2bin(Str:D $hexchar where m:i/<[a..f\d]>$/) is export(:util) {
     my $decimal = hexchar2dec($hexchar);
     return sprintf "%04b", $decimal;
 } # hexchar2bin
 
 #------------------------------------------------------------------------------
-# Subroutine
-# Purpose :
-# Params  :
-# Returns :
-sub hexchar2dec($hexchar is copy where m:i/^<[a..f\d]>$/) is export(:util) {
+# Subroutine hexchar2dec
+# Purpose : Convert a single hexadecimal character to a decimal number
+# Params  : Hexadecimal character
+# Returns : Decimal number
+sub hexchar2dec(Str:D $hexchar is copy where m:i/^<[a..f\d]>$/) is export(:util) {
     my Int $num;
 
     $hexchar .= lc;
@@ -555,11 +556,11 @@ sub hexchar2dec($hexchar is copy where m:i/^<[a..f\d]>$/) is export(:util) {
 } # hexchar2dec
 
 #------------------------------------------------------------------------------
-# Subroutine
-# Purpose :
-# Params  :
-# Returns :
-sub hex2dec($hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
+# Subroutine hex2dec
+# Purpose : Convert a positive hexadecimal number (string) to a decimal number
+# Params  : Hexadecimal number (string), desired length (optional)
+# Returns : Decimal number
+sub hex2dec(Str:D $hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
     my @chars = $hex.comb;
     @chars .= reverse;
     my Int $decimal = 0;
@@ -575,11 +576,11 @@ sub hex2dec($hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
 } # hex2dec
 
 #------------------------------------------------------------------------------
-# Subroutine
-# Purpose :
-# Params  :
-# Returns :
-sub hex2bin($hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
+# Subroutine hex2bin
+# Purpose : Convert a positive hexadecimal number (string) to a binary string
+# Params  : Hexadecimal number (string), desired length (optional)
+# Returns : Binary string
+sub hex2bin(Str:D $hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
     my @chars = $hex.comb;
     my $bin = '';
     for @chars -> $c {
@@ -593,11 +594,11 @@ sub hex2bin($hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
 } # hex2bin
 
 #------------------------------------------------------------------------------
-# Subroutine
-# Purpose :
-# Params  :
-# Returns :
-sub dec2hex(Int $dec where $dec > 0, UInt $len = 0) is export(:util) {
+# Subroutine dec2hex
+# Purpose : Convert a positive integer to a hexadecimal number (string)
+# Params  : Positive decimal number, desired length (optional)
+# Returns : Hexadecimal number (string)
+sub dec2hex(UInt $dec, UInt $len = 0) is export(:util) {
     my $hex = sprintf "%x", $dec;
     if $len && $len > $hex.chars {
 	my $s = '0' x ($len - $hex.chars);
@@ -607,11 +608,11 @@ sub dec2hex(Int $dec where $dec > 0, UInt $len = 0) is export(:util) {
 } # dec2hex
 
 #------------------------------------------------------------------------------
-# Subroutine
-# Purpose :
-# Params  :
-# Returns :
-sub dec2bin(Int $dec where $dec > 0, UInt $len = 0) is export(:util) {
+# Subroutine dec2bin
+# Purpose : Convert a positive integer to a binary number (string)
+# Params  : Positive decimal number, desired length (optional)
+# Returns : Binary number (string)
+sub dec2bin(UInt $dec, UInt $len = 0) is export(:util) {
     my $bin = sprintf "%b", $dec;
     if $len && $len > $bin.chars {
 	my $s = '0' x ($len - $bin.chars);
@@ -621,11 +622,11 @@ sub dec2bin(Int $dec where $dec > 0, UInt $len = 0) is export(:util) {
 } # dec2bin
 
 #------------------------------------------------------------------------------
-# Subroutine
-# Purpose :
-# Params  :
-# Returns :
-sub bin2dec($bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
+# Subroutine bin2dec
+# Purpose : Convert a binary number (string) to a decimal number
+# Params  : Binary number (string), desired length (optional)
+# Returns : Decimal number (or string)
+sub bin2dec(Str:D $bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
     my @bits = $bin.comb;
     @bits .= reverse;
     my $decimal = 0;
@@ -642,11 +643,11 @@ sub bin2dec($bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
 } # bin2dec
 
 #------------------------------------------------------------------------------
-# Subroutine
-# Purpose :
-# Params  :
-# Returns :
-sub bin2hex($bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
+# Subroutine bin2hex
+# Purpose : Convert a binary number (string) to a hexadecimal number (string)
+# Params  : Binary number (string), desired length (optional)
+# Returns : Hexadecimal number (string)
+sub bin2hex(Str:D $bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
     my $decimal = bin2dec($bin);
     if $len && $len > $decimal.chars {
 	my $s = '0' x ($len - $decimal.chars);
