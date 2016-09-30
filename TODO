@@ -1,19 +1,11 @@
 REQUIREMENTS FOR RELEASE
 ------------------------
 
-export all subs (and test them)
-
 make starting version 1.0.0 (but consider a beta release with ver < 1)
 
 separate tests into appropriate files
 
 ensure the :auth and :ver adverbs are in place
-
-put base conversion and other utility functions in separate export
-  category: util
-
-add param constraints where appropriate
-  (particularly in utility functions)
 
 change sub comments to pod, ensure all subs are described
 
@@ -26,6 +18,14 @@ add Makefile target to generate text from pod in the module
 ==================================
 DONE:
 ==================================
+
+add param constraints where appropriate
+  (particularly in utility functions) (DONE)
+
+put base conversion and other utility functions in separate export
+  category: util (DONE)
+
+export all subs (and test them) (DONE)
 
 complete two new base conversion functions (DONE)
 
