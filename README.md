@@ -53,9 +53,6 @@ handy numerical base conversion routines that may not be available elsewhere:
 See [UTIL-SUBS](https://github.com/tbrowder/Net-IP-Lite-Perl6/blob/master/UTIL-SUBS.md)
 for details of each plus some other utility subroutines.
 
-- ...
-
-
 ## Current Limitations
 
 Addresses must be in "plain" format (no CIDR or other newtwork information).
