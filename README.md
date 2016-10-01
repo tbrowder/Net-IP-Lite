@@ -3,9 +3,9 @@
 [![Build Status](https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg?branch=master)]
   (https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6)
 
-This is a Perl 6 version of CPAN's Perl 5 module
+This is a limited Perl 6 version of CPAN's Perl 5 module
 [Net::IP](https://metacpan.org/pod/Net::IP).  It provides a subset of
-that modules basic IPv4 and IPv6 address manipulation subroutines.
+that module's basic IPv4 and IPv6 address manipulation subroutines.
 
 See the Wikipedia article
 [IP Address](https://en.wikipedia.org/wiki/IP_address) for a detailed
@@ -111,7 +111,7 @@ the development process. The Makefile can be tailored as desired.
 ## Acknowledgements
 
 This module is indebted to the CPAN Perl IP::Net module authors for
-providing such a useful set of functions:
+providing such a useful set of subroutines:
 
 - Manuel Valente <manuel.valente@gmail.com>
 
