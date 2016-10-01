@@ -18,7 +18,6 @@ my token hexadecimalchar  { :i ^ <[a..f\d]> $ }
 my token ip-version       { ^ <[46]> $ }
 my token decimal          { ^ \d+ $ }
 
-
 #------------------------------------------------------------------------------
 # Subroutine ip-reverse-address
 # Purpose : Reverse an IP address, use dots for separators for all types
@@ -43,7 +42,7 @@ sub ip-reverse-address($ip is copy, $ip-version where &ip-version) is export {
     $ip = join '.', @fields;
 
     return $ip;
-}
+} # ip-reverse-address
 
 #------------------------------------------------------------------------------
 # Subroutine ip-bintoip
@@ -102,9 +101,9 @@ sub ip-bintoip($binip is copy where &binary,
 
 #------------------------------------------------------------------------------
 # Subroutine ip-remove-leading-zeroes
-# Purpose :
-# Params  :
-# Returns :
+# Purpose : Remove leading (unneeded) zeroes from octets or quads
+# Params  : IP address
+# Returns : IP address with no unneeded zeroes
 sub ip-remove-leading-zeroes(Str:D $ip is copy, $ip-version where &ip-version) is export {
 
     # IPv6 addresses must be expanded first
@@ -132,7 +131,8 @@ sub ip-remove-leading-zeroes(Str:D $ip is copy, $ip-version where &ip-version) i
     $ip = join $sep, @quads;
 
     return $ip;
-}
+
+} # ip-remove-leading-zeroes
 
 #------------------------------------------------------------------------------
 # Subroutine ip-compress-address
@@ -260,6 +260,7 @@ sub ip-iplengths($version) is export {
     else {
         return 0; # unknown
     }
+
 } # ip-iplengths
 
 #------------------------------------------------------------------------------
@@ -275,6 +276,7 @@ sub ip-get-version($ip) is export {
     return '6' if ip-is-ipv6($ip);
 
     return '0'; # unknown
+
 } # ip-get-version
 
 #------------------------------------------------------------------------------
@@ -430,6 +432,7 @@ sub ip-is-ipv4($ip is copy) is export {
     }
 
     return True;
+
 } # ip-is-ipv4
 
 #------------------------------------------------------------------------------
@@ -495,6 +498,7 @@ sub ip-is-ipv6($ip is copy) is export {
 
     # valid IPv6 address
     return True;
+
 } # ip-is-ipv6
 
 #=======================================================
@@ -513,7 +517,9 @@ sub count-substrs($ip, $substr) is export(:util) {
 	++$nsubstrs;
 	$idx = index $ip, $substr, $idx+1;
     }
+
     return $nsubstrs;
+
 } # count-substrs
 
 #------------------------------------------------------------------------------
@@ -560,7 +566,9 @@ sub hexchar2dec(Str:D $hexchar is copy where &hexadecimalchar) is export(:util) 
     else {
 	fail "FATAL: \$hexchar '$hexchar' is unknown";
     }
+
     return $num;
+
 } # hexchar2dec
 
 #------------------------------------------------------------------------------
@@ -591,14 +599,18 @@ sub hex2dec(Str:D $hex where &hexadecimal, UInt $len = 0) is export(:util) {
 sub hex2bin(Str:D $hex where &hexadecimal, UInt $len = 0) is export(:util) {
     my @chars = $hex.comb;
     my $bin = '';
+
     for @chars -> $c {
         $bin ~= hexchar2bin($c);
     }
+
     if $len && $len > $bin.chars {
 	my $s = '0' x ($len - $bin.chars);
 	$bin = $s ~ $bin;
     }
+
     return $bin;
+
 } # hex2bin
 
 #------------------------------------------------------------------------------
