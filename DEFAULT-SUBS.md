@@ -2,9 +2,9 @@
 
 - Subroutine ip-reverse-address
 
--- Purpose : Reverse an IP address, use dots for separators for all types
--- Params  : IP address, IP version
--- Returns : Reversed IP address on success, undef otherwise
+  -- Purpose : Reverse an IP address, use dots for separators for all types
+  -- Params  : IP address, IP version
+  -- Returns : Reversed IP address on success, undef otherwise
 
 ```Perl6
 sub ip-reverse-address(Str:D $ip is copy, UInt $ip-version where &ip-version) returns Str is export {
