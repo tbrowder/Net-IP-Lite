@@ -12,19 +12,19 @@ For debugging, use one the following methods:
 
 - set the module's $DEBUG variable:
 
-```perl6
+```Perl6
 $Net::IP::Lite::DEBUG = True;
 ```
 
 - set the environment variable:
 
-```
+```Perl6
 NET_IP_LITE_DEBUG=1
 ```
 
 ## Functions Provided by Default
 
-```
+```Perl6
 use Net::IP::Lite;
 ```
 
@@ -39,7 +39,7 @@ use Net::IP::Lite;
 The following functions are used internally by the default exported
 functions. Users should not normally need them.
 
-```
+```Perl6
 use Net::IP::Lite :util;
 ```
 - bin2hex
@@ -58,28 +58,28 @@ other than the format.
 
 Use one of the following two methods for a normal Perl 6 environment:
 
-```
+```Perl6
 zef install Net::IP::Lite
 panda install Net::IP::Lite
 ```
 
 If either attempt shows that the module isn't found or available, ensure your installer is current:
 
-```
+```Perl6
 zef update
 panda update
 ```
 
 If you want to use the latest version in the git repository, clone it and then:
 
-```
+```Perl6
     cd /path/to/cloned/repository/directory
     zef install .
 ```
 
 or
 
-```
+```Perl6
     panda install .
 ```
 
@@ -101,8 +101,8 @@ the development process. The Makefile can be tailored as desired.
 This module is indebted to the CPAN Perl IP::Net module authors for
 providing such a useful set of functions:
 
-* Manuel Valente <manuel.valente@gmail.com>
+- Manuel Valente <manuel.valente@gmail.com>
 
-* Monica Cortes Sack <mcortes@ripe.net>
+- Monica Cortes Sack <mcortes@ripe.net>
 
-* Lee Wilmot <lee@ripe.net>
+- Lee Wilmot <lee@ripe.net>
