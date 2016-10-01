@@ -22,25 +22,36 @@ $Net::IP::Lite::DEBUG = True;
 NET_IP_LITE_DEBUG=1
 ```
 
-## Functions Provided by Default
+## Subroutines Exported by Default
 
 ```Perl6
 use Net::IP::Lite;
 ```
 
-See [DEFAULT-SUBS](https://github.com/tbrowder/Net-IP-Lite-Perl6/blob/master/DEFAULT-SUBS.md)
+See
+[DEFAULT-SUBS](https://github.com/tbrowder/Net-IP-Lite-Perl6/blob/master/DEFAULT-SUBS.md)
+for a list of default-exported subroutines, each with a short
+description along with its complete signature.
 
-## Additional Functions Exported with Named Parameter `:util`
+## Additional Suroutines Exported with Named Parameter `:util`
 
 ```Perl6
 use Net::IP::Lite :util;
 ```
 
-See [UTIL-SUBS](https://github.com/tbrowder/Net-IP-Lite-Perl6/blob/master/UTIL-SUBS.md)
+The `:util` subroutines are used internally by the default exported
+subroutines. Users should not normally need them, but there are some
+handy numerical base conversion routines that may not be available elsewhere:
 
-The following functions are used internally by the default exported
-functions. Users should not normally need them.
 - bin2hex
+- bin2dec
+- hex2bin
+- hex2dec
+- dec2hex
+- dec2bin
+
+See [UTIL-SUBS](https://github.com/tbrowder/Net-IP-Lite-Perl6/blob/master/UTIL-SUBS.md)
+for details of each plus some other utility subroutines.
 
 - ...
 
