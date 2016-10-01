@@ -1,4 +1,4 @@
-unit module Net::IP::Lite:ver<0.1.0>:auth<Tom Browder (tom.browder@gmail.com)>;
+unit module Net::IP::Lite:ver<1.0.0>:auth<Tom Browder (tom.browder@gmail.com)>;
 
 # export a debug var for usersx
 our $DEBUG = False;
