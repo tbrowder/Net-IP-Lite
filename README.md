@@ -13,16 +13,16 @@ For debugging, use one the following methods:
 - set the module's $DEBUG variable:
 
 ```
-$Net::IP::Lite::DEBUG = True;
+  $Net::IP::Lite::DEBUG = True;
 ```
 
 - set the environment variable:
 
 ```
-NET_IP_LITE_DEBUG=1
+  NET_IP_LITE_DEBUG=1
 ```
-Functions Provided by Default
------------------------------
+
+## Functions Provided by Default
 
     use Net::IP::Lite;
 
