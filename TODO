@@ -1,15 +1,15 @@
---------------------------------
+===========================================
 REQUIREMENTS FOR INITIAL RELEASE
---------------------------------
+===========================================
 
-decided: use a README.md for now, all pod in the module able
-  to be extracted to pdf (note that README.md takes precedence as
-  far as the one used to auto render; all others do render when
-  selected
+ask for comments from #perl6 (pending receipt of comments...)
 
-==================================
+
+------------------------------------------
 DONE:
-==================================
+------------------------------------------
+
+decided: use a README.md for now (DONE)
 
 ensure all subs are described (DONE)
 
@@ -58,9 +58,9 @@ use loop construct in places with explicit list for statements (DONE)
 
 remove type constraints from ip type check funcs (DONE)
 
-------------------------------------
+====================================
 REQUIREMENTS FOR A FOLLOW-ON RELEASE
-------------------------------------
+====================================
 
 add capability to handle CIDR notation
 
