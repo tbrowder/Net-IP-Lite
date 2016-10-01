@@ -6,19 +6,21 @@
 This is a limited version of CPAN's Net::IP for Perl 6 and provides a
 subset of its basic IPv4 and IPv6 address manipulation functions.
 
-Debugging
----------
+## Debugging
 
 For debugging, use one the following methods:
 
-    set the module's $DEBUG variable:
+- set the module's $DEBUG variable:
 
-      $Net::IP::Lite::DEBUG = True;
+```
+$Net::IP::Lite::DEBUG = True;
+```
 
-    set the environment variable:
+- set the environment variable:
 
-      NET_IP_LITE_DEBUG=1
-
+```
+NET_IP_LITE_DEBUG=1
+```
 Functions Provided by Default
 -----------------------------
 
