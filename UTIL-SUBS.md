@@ -21,7 +21,8 @@ sub hexchar2bin(Str:D $hexchar where &hexadecimalchar) is export(:util) {...}
 - Params  : Hexadecimal character
 - Returns : Decimal number
 ```Perl6
-sub hexchar2dec(Str:D $hexchar is copy where &hexadecimalchar) returns UInt is export(:util) {...}
+sub hexchar2dec(Str:D $hexchar is copy where &hexadecimalchar)
+  returns UInt is export(:util) {...}
 ```
 
 ### hex2dec
@@ -29,7 +30,8 @@ sub hexchar2dec(Str:D $hexchar is copy where &hexadecimalchar) returns UInt is e
 - Params  : Hexadecimal number (string), desired length (optional)
 - Returns : Decimal number (or string)
 ```Perl6
-sub hex2dec(Str:D $hex where &hexadecimal, UInt $len = 0) returns Cool is export(:util) {...}
+sub hex2dec(Str:D $hex where &hexadecimal, UInt $len = 0)
+  returns Cool is export(:util) {...}
 ```
 
 ### hex2bin
@@ -37,7 +39,8 @@ sub hex2dec(Str:D $hex where &hexadecimal, UInt $len = 0) returns Cool is export
 - Params  : Hexadecimal number (string), desired length (optional)
 - Returns : Binary number (string)
 ```Perl6
-sub hex2bin(Str:D $hex where &hexadecimal, UInt $len = 0) returns Str is export(:util) {...}
+sub hex2bin(Str:D $hex where &hexadecimal, UInt $len = 0)
+  returns Str is export(:util) {...}
 ```
 
 ### dec2hex
@@ -45,7 +48,8 @@ sub hex2bin(Str:D $hex where &hexadecimal, UInt $len = 0) returns Str is export(
 - Params  : Positive decimal number, desired length (optional)
 - Returns : Hexadecimal number (string)
 ```Perl6
-sub dec2hex(UInt $dec, UInt $len = 0) returns Str is export(:util) {...}
+sub dec2hex(UInt $dec, UInt $len = 0)
+  returns Str is export(:util) {...}
 ```
 
 ### dec2bin
@@ -53,7 +57,8 @@ sub dec2hex(UInt $dec, UInt $len = 0) returns Str is export(:util) {...}
 - Params  : Positive decimal number, desired length (optional)
 - Returns : Binary number (string)
 ```Perl6
-sub dec2bin(UInt $dec, UInt $len = 0) returns Str is export(:util) {...}
+sub dec2bin(UInt $dec, UInt $len = 0)
+  returns Str is export(:util) {...}
 ```
 
 ### bin2dec
@@ -61,7 +66,8 @@ sub dec2bin(UInt $dec, UInt $len = 0) returns Str is export(:util) {...}
 - Params  : Binary number (string), desired length (optional)
 - Returns : Decimal number (or string)
 ```Perl6
-sub bin2dec(Str:D $bin where &binary, UInt $len = 0) returns Cool is export(:util) {...}
+sub bin2dec(Str:D $bin where &binary, UInt $len = 0)
+  returns Cool is export(:util) {...}
 ```
 
 ### bin2hex
@@ -69,5 +75,6 @@ sub bin2dec(Str:D $bin where &binary, UInt $len = 0) returns Cool is export(:uti
 - Params  : Binary number (string), desired length (optional)
 - Returns : Hexadecimal number (string)
 ```Perl6
-sub bin2hex(Str:D $bin where &binary, UInt $len = 0) returns Str is export(:util) {...}
+sub bin2hex(Str:D $bin where &binary, UInt $len = 0)
+  returns Str is export(:util) {...}
 ```
