@@ -1,13 +1,10 @@
-Net::IP::Lite
-=============
+# Net::IP::Lite
 
-This is a limited version of CPAN's Net::IP for Perl 6 and provides a subset of its basic IPv4 and IPv6 address manipulation functions.
+[![Build Status](https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg?branch=master)]
+  (https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6)
 
-HTML
-====
-
-    <a href="https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6">
-        <img src="https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg?branch=master"></a>
+This is a limited version of CPAN's Net::IP for Perl 6 and provides a
+subset of its basic IPv4 and IPv6 address manipulation functions.
 
 Debugging
 ---------
