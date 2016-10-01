@@ -538,7 +538,7 @@ sub hexchar2bin(Str:D $hexchar where &hexadecimalchar) is export(:util) {
 # Params  : Hexadecimal character
 # Returns : Decimal number
 sub hexchar2dec(Str:D $hexchar is copy where &hexadecimalchar) returns UInt is export(:util) {
-    my Int $num;
+    my UInt $num;
 
     $hexchar .= lc;
     if $hexchar ~~ /^ \d+ $/ {
@@ -579,7 +579,7 @@ sub hexchar2dec(Str:D $hexchar is copy where &hexadecimalchar) returns UInt is e
 sub hex2dec(Str:D $hex where &hexadecimal, UInt $len = 0) returns Cool is export(:util) {
     my @chars = $hex.comb;
     @chars .= reverse;
-    my Int $decimal = 0;
+    my UInt $decimal = 0;
     my $power = 0;
     for @chars -> $c {
         $decimal += hexchar2dec($c) * 16 ** $power;
