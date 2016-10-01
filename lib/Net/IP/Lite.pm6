@@ -11,12 +11,20 @@ BEGIN {
     }
 }
 
+# define tokens for common regexes
+my token binary           { ^ <[01]>+ $ }
+my token hexadecimal      { :i ^ <[a..f\d]>+ $ }
+my token hexadecimalchar  { :i ^ <[a..f\d]> $ }
+my token ip-version       { ^ <[46]> $ }
+my token decimal          { ^ \d+ $ }
+
+
 #------------------------------------------------------------------------------
 # Subroutine ip-reverse-address
 # Purpose : Reverse an IP address, use dots for separators for all types
 # Params  : IP address, IP version
 # Returns : Reversed IP address on success, undef otherwise
-sub ip-reverse-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
+sub ip-reverse-address($ip is copy, $ip-version where &ip-version) is export {
 
     my $sep = $ip-version == 4 ?? '.' !! ':';
 
@@ -42,8 +50,8 @@ sub ip-reverse-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
 # Purpose : Transform a bit string into an IP address
 # Params  : bit string, IP version
 # Returns : IP address on success, undef otherwise
-sub ip-bintoip($binip is copy where /^<[01]>+$/,
-               $ip-version where /^<[46]>?$/) is export {
+sub ip-bintoip($binip is copy where &binary,
+               $ip-version where &ip-version) is export {
 
     # Define normal size for address
     my $len = ip-iplengths($ip-version);
@@ -97,7 +105,7 @@ sub ip-bintoip($binip is copy where /^<[01]>+$/,
 # Purpose :
 # Params  :
 # Returns :
-sub ip-remove-leading-zeroes(Str:D $ip is copy, $ip-version where /^<[46]>?$/) is export {
+sub ip-remove-leading-zeroes(Str:D $ip is copy, $ip-version where &ip-version) is export {
 
     # IPv6 addresses must be expanded first
     $ip = ip-expand-address($ip, $ip-version) if $ip-version == 6;
@@ -131,7 +139,7 @@ sub ip-remove-leading-zeroes(Str:D $ip is copy, $ip-version where /^<[46]>?$/) i
 # Purpose : Compress an IPv6 address
 # Params  : IP, IP version
 # Returns : Compressed IP or undef (problem)
-sub ip-compress-address(Str:D $ip is copy, $ip-version where /^<[46]>?$/) is export {
+sub ip-compress-address(Str:D $ip is copy, $ip-version where &ip-version) is export {
 
     # already compressed addresses must be expanded first
     $ip = ip-expand-address($ip, $ip-version) if $ip-version == 6;
@@ -274,7 +282,7 @@ sub ip-get-version($ip) is export {
 # Purpose : Expand an address from compact notation
 # Params  : IP address, IP version
 # Returns : expanded IP address or undef on failure
-sub ip-expand-address($ip is copy, $ip-version where /^<[46]>?$/) is export {
+sub ip-expand-address($ip is copy, $ip-version where &ip-version) is export {
 
     # IPv4 : add .0 for missing quads
     if $ip-version == 4 {
@@ -513,7 +521,7 @@ sub count-substrs($ip, $substr) is export(:util) {
 # Purpose : Convert a single hexadecimal character to a binary string
 # Params  : Hexadecimal character
 # Returns : Binary string
-sub hexchar2bin(Str:D $hexchar where m:i/<[a..f\d]>$/) is export(:util) {
+sub hexchar2bin(Str:D $hexchar where &hexadecimalchar) is export(:util) {
     my $decimal = hexchar2dec($hexchar);
     return sprintf "%04b", $decimal;
 } # hexchar2bin
@@ -523,7 +531,7 @@ sub hexchar2bin(Str:D $hexchar where m:i/<[a..f\d]>$/) is export(:util) {
 # Purpose : Convert a single hexadecimal character to a decimal number
 # Params  : Hexadecimal character
 # Returns : Decimal number
-sub hexchar2dec(Str:D $hexchar is copy where m:i/^<[a..f\d]>$/) is export(:util) {
+sub hexchar2dec(Str:D $hexchar is copy where &hexadecimalchar) is export(:util) {
     my Int $num;
 
     $hexchar .= lc;
@@ -560,7 +568,7 @@ sub hexchar2dec(Str:D $hexchar is copy where m:i/^<[a..f\d]>$/) is export(:util)
 # Purpose : Convert a positive hexadecimal number (string) to a decimal number
 # Params  : Hexadecimal number (string), desired length (optional)
 # Returns : Decimal number
-sub hex2dec(Str:D $hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
+sub hex2dec(Str:D $hex where &hexadecimal, UInt $len = 0) is export(:util) {
     my @chars = $hex.comb;
     @chars .= reverse;
     my Int $decimal = 0;
@@ -580,7 +588,7 @@ sub hex2dec(Str:D $hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util)
 # Purpose : Convert a positive hexadecimal number (string) to a binary string
 # Params  : Hexadecimal number (string), desired length (optional)
 # Returns : Binary string
-sub hex2bin(Str:D $hex where m:i/^<[a..f\d]>+$/, UInt $len = 0) is export(:util) {
+sub hex2bin(Str:D $hex where &hexadecimal, UInt $len = 0) is export(:util) {
     my @chars = $hex.comb;
     my $bin = '';
     for @chars -> $c {
@@ -626,7 +634,7 @@ sub dec2bin(UInt $dec, UInt $len = 0) is export(:util) {
 # Purpose : Convert a binary number (string) to a decimal number
 # Params  : Binary number (string), desired length (optional)
 # Returns : Decimal number (or string)
-sub bin2dec(Str:D $bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
+sub bin2dec(Str:D $bin where &binary, UInt $len = 0) is export(:util) {
     my @bits = $bin.comb;
     @bits .= reverse;
     my $decimal = 0;
@@ -647,7 +655,7 @@ sub bin2dec(Str:D $bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
 # Purpose : Convert a binary number (string) to a hexadecimal number (string)
 # Params  : Binary number (string), desired length (optional)
 # Returns : Hexadecimal number (string)
-sub bin2hex(Str:D $bin where /^<[01]>+$/, UInt $len = 0) is export(:util) {
+sub bin2hex(Str:D $bin where &binary, UInt $len = 0) is export(:util) {
     my $decimal = bin2dec($bin);
     if $len && $len > $decimal.chars {
 	my $s = '0' x ($len - $decimal.chars);
