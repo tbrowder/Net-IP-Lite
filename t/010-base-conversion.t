@@ -13,7 +13,7 @@ is hex2dec('ff', 5), '00255';
 is bin2dec('11'), 3;
 is bin2dec('11', 4), '0003';
 
-is bin2hex('11'), 3;
+is bin2hex('00001010'), 'a';
 is bin2hex('11', 4), '0003';
 
 is dec2hex(10), 'a';
