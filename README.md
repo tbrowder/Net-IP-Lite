@@ -61,7 +61,7 @@ for details of each plus some other utility subroutines.
 
 ## Current Limitations
 
-Addresses must be in "plain" format (no CIDR or other newtwork information).
+Addresses must be in "plain" format (no CIDR or other network information).
 
 For the moment, no consideration for addresses is made for invalidity
 other than the format.
@@ -110,7 +110,8 @@ the development process. The Makefile can be tailored as desired.
 
 ## Acknowledgements
 
-This module is indebted to the CPAN Perl IP::Net module authors for
+This module is indebted to the CPAN Perl
+[IP::Net](https://metacpan.org/pod/Net::IP) module authors for
 providing such a useful set of subroutines:
 
 - Manuel Valente <manuel.valente@gmail.com>
