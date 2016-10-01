@@ -6,10 +6,6 @@ tighten arg type requirements
 
 add return types where appropriate
 
-define and use regex tokens for the oft-used ones such as
-  for: binary, hexadecimal, and ip-version numbers and
-  positive decimal integers
-
 decided: use a README.md for now, all pod in the module able
   to be extracted to pdf (note that README.md takes precedence as
   far as the one used to auto render; all others do render when
@@ -25,6 +21,10 @@ add Makefile target to generate text from pod in the module
 DONE:
 ==================================
 
+define and use regex tokens for the oft-used ones such as
+  for: binary, hexadecimal, and ip-version numbers; single
+  hexadecimal characters; and positive decimal integers (DONE)
+  
 separate tests into appropriate files (DONE)
 
 put util functions after all default export functions (DONE)
