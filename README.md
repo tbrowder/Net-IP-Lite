@@ -28,20 +28,18 @@ NET_IP_LITE_DEBUG=1
 use Net::IP::Lite;
 ```
 
-- ip-expand-address
-
-- ip-reverse-address
-
-- ...
+See [DEFAULT-SUBS](http://github.com/tbrowder/Net-IP-Lite-Perl6/DEFAULT-SUBS.md)
 
 ## Additional Functions Exported with Named Parameter `:util`
-
-The following functions are used internally by the default exported
-functions. Users should not normally need them.
 
 ```Perl6
 use Net::IP::Lite :util;
 ```
+
+See [UTIL-SUBS](http://github.com/tbrowder/Net-IP-Lite-Perl6/UTIL-SUBS.md)
+
+The following functions are used internally by the default exported
+functions. Users should not normally need them.
 - bin2hex
 
 - ...
