@@ -12,7 +12,7 @@ For debugging, use one the following methods:
 
 - set the module's $DEBUG variable:
 
-```
+```perl6
 $Net::IP::Lite::DEBUG = True;
 ```
 
@@ -36,7 +36,8 @@ use Net::IP::Lite;
 
 ## Additional Functions Exported with Named Parameter `:util`
 
-The following functions are used internally by the default exported functions. Users should not normally need them.
+The following functions are used internally by the default exported
+functions. Users should not normally need them.
 
 ```
 use Net::IP::Lite :util;
