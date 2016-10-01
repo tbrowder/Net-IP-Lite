@@ -73,14 +73,14 @@ panda update
 If you want to use the latest version in the git repository, clone it and then:
 
 ```Perl6
-    cd /path/to/cloned/repository/directory
-    zef install .
+cd /path/to/cloned/repository/directory
+zef install .
 ```
 
 or
 
 ```Perl6
-    panda install .
+panda install .
 ```
 
 ## Development
