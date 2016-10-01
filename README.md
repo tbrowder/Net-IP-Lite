@@ -39,7 +39,7 @@ See
 for a list of default-exported subroutines, each with a short
 description along with its complete signature.
 
-## Additional Suroutines Exported with Named Parameter `:util`
+## Additional Subroutines Exported with Named Parameter `:util`
 
 ```Perl6
 use Net::IP::Lite :util;
