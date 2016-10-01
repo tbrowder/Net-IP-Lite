@@ -3,8 +3,14 @@
 [![Build Status](https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg?branch=master)]
   (https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6)
 
-This is a limited version of CPAN's Net::IP for Perl 6 and provides a
-subset of its basic IPv4 and IPv6 address manipulation functions.
+This is a Perl 6 version of CPAN's Perl 5 module
+[Net::IP](https://metacpan.org/pod/Net::IP).  It provides a subset of
+that modules basic IPv4 and IPv6 address manipulation subroutines.
+
+See the Wikipedia article
+[IP Address](https://en.wikipedia.org/wiki/IP_address) for a detailed
+introduction to IP addresses along with links to the authoritative
+RFCs.
 
 ## Debugging
 
