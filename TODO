@@ -2,29 +2,27 @@
 REQUIREMENTS FOR INITIAL RELEASE
 --------------------------------
 
-tighten arg type requirements
-
-add return types where appropriate
-
 decided: use a README.md for now, all pod in the module able
   to be extracted to pdf (note that README.md takes precedence as
   far as the one used to auto render; all others do render when
   selected
 
-change sub comments to pod, ensure all subs are described
-
-clean up code and pod
-
-add Makefile target to generate text from pod in the module
-
 ==================================
 DONE:
 ==================================
 
+ensure all subs are described (DONE)
+
+clean up code (DONE)
+
+add return types where appropriate (DONE)
+
+tighten arg type requirements (DONE)
+
 define and use regex tokens for the oft-used ones such as
   for: binary, hexadecimal, and ip-version numbers; single
   hexadecimal characters; and positive decimal integers (DONE)
-  
+
 separate tests into appropriate files (DONE)
 
 put util functions after all default export functions (DONE)
@@ -66,3 +64,4 @@ REQUIREMENTS FOR A FOLLOW-ON RELEASE
 
 add capability to handle CIDR notation
 
+add Makefile target to generate text from pod in the module
