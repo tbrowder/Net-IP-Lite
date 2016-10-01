@@ -1,6 +1,6 @@
 # Default Exported Subroutines
 
-- Subroutine ip-reverse-address
+- *ip-reverse-address*
   - Purpose : Reverse an IP address, use dots for separators for all types
   - Params  : IP address, IP version
   - Returns : Reversed IP address on success, undef otherwise
