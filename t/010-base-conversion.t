@@ -1,7 +1,7 @@
 use v6;
 use Test;
 
-use Net::IP::Lite :ALL;
+use Net::IP::Lite :util;
 
 # base conversions
 is hexchar2dec('a'), 10;
