@@ -28,7 +28,7 @@ NET_IP_LITE_DEBUG=1
 use Net::IP::Lite;
 ```
 
-See [DEFAULT-SUBS](http://github.com/tbrowder/Net-IP-Lite-Perl6/DEFAULT-SUBS.md)
+See [DEFAULT-SUBS](https://github.com/tbrowder/Net-IP-Lite-Perl6/DEFAULT-SUBS.md)
 
 ## Additional Functions Exported with Named Parameter `:util`
 
@@ -36,7 +36,7 @@ See [DEFAULT-SUBS](http://github.com/tbrowder/Net-IP-Lite-Perl6/DEFAULT-SUBS.md)
 use Net::IP::Lite :util;
 ```
 
-See [UTIL-SUBS](http://github.com/tbrowder/Net-IP-Lite-Perl6/UTIL-SUBS.md)
+See [UTIL-SUBS](https://github.com/tbrowder/Net-IP-Lite-Perl6/UTIL-SUBS.md)
 
 The following functions are used internally by the default exported
 functions. Users should not normally need them.
