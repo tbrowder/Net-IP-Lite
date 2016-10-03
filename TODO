@@ -2,8 +2,6 @@
 REQUIREMENTS FOR INITIAL RELEASE
 ===========================================
 
-change to verision 0.1.0
-
 add README.md remark about possible doc and API changes prior to
 version 1.0.0
 
@@ -25,6 +23,8 @@ add suitable tags to META6.json
 ------------------------------------------
 DONE:
 ------------------------------------------
+
+change to verision 0.1.0 (DONE)
 
 decided: use a README.md for now (DONE)
 
