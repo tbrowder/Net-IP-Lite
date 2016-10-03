@@ -24,7 +24,7 @@ my $tgtdir = shift @*ARGS;
 my $debug  = shift @*ARGS;
 $debug = 0 if !$debug;
 
-my @kw = <
+my %kw = set <
 Subroutine
 Purpose
 Params
@@ -32,9 +32,8 @@ Returns
 file:
 title:
 >;
-say @kw.perl if $debug;
-my %kw = map { $_ => 1 }, @kw;
 say %kw.perl if $debug;
+
 # need a simple entry class
 class entry {
 }
@@ -54,7 +53,7 @@ sub create-md($f, $d) {
             next if $nw < 2; 
             my $kw = @words[1];
             say "possible keyword '$kw'" if $debug;
-            next if not %kw{$kw}:exists;
+            next if !%kw{$kw};
             say "found keyword '$kw'"; # if $debug;
         }
         elsif $line ~~ /^ sub \s* / {

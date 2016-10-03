@@ -1,5 +1,8 @@
 unit module Net::IP::Lite:ver<1.0.0>:auth<Tom Browder (tom.browder@gmail.com)>;
 
+# file: DEFAULT-SUBS.md
+# title: Subroutines Exported by Default
+
 # export a debug var for usersx
 our $DEBUG = False;
 BEGIN {
@@ -504,6 +507,9 @@ sub ip-is-ipv6(Str:D $ip is copy) returns Bool is export {
 #=======================================================
 # export(:util) subs below here
 #=======================================================
+
+# file: UTIL-SUBS.md
+# title: Additional Subroutines Exported with Named Parameter ':util'
 
 #------------------------------------------------------------------------------
 # Subroutine count-substrs
