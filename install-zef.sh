@@ -10,4 +10,4 @@ D=`pwd`
 echo "=== now working in dir '$D' ==="
 echo "=== current path: '$PATH' ==="
 # the coup de grace:
-perl6 -Ilib bin/zef install .
+perl6 -Ilib bin/zef --debug install .
