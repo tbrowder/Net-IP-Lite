@@ -13,6 +13,8 @@ consider changing to check ip version inside other functions and not
 create a script and make target to produce the DEFAULT-SUBS.md and
   UTIL-SUBS.md
 
+consider removing ip- prefix to subs
+
 ------------------------------------------
 DONE:
 ------------------------------------------
