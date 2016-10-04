@@ -25,7 +25,7 @@ my $debug  = shift @*ARGS;
 $debug = 0 if !$debug;
 
 my %kw = [
-    'Subroutine' => '###'.
+    'Subroutine' => '###',
     'Purpose'    => '-',
     'Params'     => '-',
     'Returns'    => '-',
@@ -44,7 +44,8 @@ create-md($modfil, $tgtdir);
 #### subroutines ####
 sub create-md($f, $d) {
     my %mdfils;
-    for $f.IO.lines -> $line {
+    my $fp = open $f;
+    for $fp.lines -> $line {
         say $line if $debug;
         my @words = $line.words;
         next if !@words;
@@ -60,6 +61,9 @@ sub create-md($f, $d) {
         elsif $line ~~ /^ sub \s* / {
             # start sub signature
             say "found sub sig '$line'";
+            my @lines = [$line];
+            my $li = $fp.get;
+            say "next line: $li";
         }
 
     }
