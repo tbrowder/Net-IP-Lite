@@ -45,7 +45,7 @@ create-md($modfil, $tgtdir);
 sub create-md($f, $d) {
     my %mdfils;
     my $fp = open $f;
-    for $fp.lines -> $line {
+    for $fp.lines <-> $line {
         say $line if $debug;
         my @words = $line.words;
         next if !@words;
@@ -61,9 +61,34 @@ sub create-md($f, $d) {
         elsif $line ~~ /^ sub \s* / {
             # start sub signature
             say "found sub sig '$line'";
-            my @lines = [$line];
-            my $li = $fp.get;
-            say "next line: $li";
+            my $sig = $line;
+            if $line !~~ / '{' / {
+                # not the end of signature
+                my $nextline = $fp.get;
+                say "next line: $nextline";
+                # just in case sig spans multiple lines:
+                while $nextline !~~ / '{' / {
+                    $sig ~= ' ' ~ $nextline;
+                }
+                say "complete sub sig '$line'";
+            }
+            # tidy the line into two lines
+            my @lines;
+            my $idx = index $sig, ')';
+                if $idx.defined {
+                    my $line-0 = substr $sig, 0, $idx + 1;
+                    $sig = substr $sig, $idx + 1;
+                    $idx = substr $sig, '{';
+                    if !$idx.defined {
+                        die "FATAL: unable to find an opening '{' in sub sig '$sig'";
+                    }
+       
+                }
+                else {
+                    die "FATAL: unable to find a closing ')' in sub sig '$sig'";
+                }
+            }
+            say "DEBUG:";
         }
 
     }
