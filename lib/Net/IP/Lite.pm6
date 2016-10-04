@@ -20,6 +20,24 @@ my token hexadecimal      { :i ^ <[a..f\d]>+ $ }
 my token hexadecimalchar  { :i ^ <[a..f\d]> $ }
 my token ip-version       { ^ <[46]> $ }
 my token decimal          { ^ \d+ $ }
+my token domain           { ^ \d+ $ }
+
+#------------------------------------------------------------------------------
+# Subroutine ip-reverse-domain
+# Purpose : Reverse a domain name
+# Params  : Domain name
+# Returns : Reversed name
+sub ip-reverse-domain(Str:D $dom is copy) returns Str is export {
+    # check for validity
+    unless $dom &domain {
+	return $dom if !~~ / '.' /;
+	my @d = split '.', $dom;
+	@d .= reverse;
+	return join '.', @d;
+    }
+
+    return;
+} # ip-reverse-domain
 
 #------------------------------------------------------------------------------
 # Subroutine ip-reverse-address
