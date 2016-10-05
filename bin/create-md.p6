@@ -40,7 +40,7 @@ my %kw = [
 
 say %kw.perl if $debug;
 
-my %mdfils; 
+my %mdfils;
 create-md($modfil);
 say %mdfils.perl if $debug;
 
@@ -48,8 +48,8 @@ say %mdfils.perl if $debug;
 my @ofils;
 for %mdfils.keys -> $f is copy {
     # distinguish bewteen file base name and path
-    my $of = $f;  
-    $of = $tgtdir ~ '/' ~ $of if $tgtdir;  
+    my $of = $f;
+    $of = $tgtdir ~ '/' ~ $of if $tgtdir;
     push @ofils, $of;
     my $fh = open $of, :w;
 
@@ -71,18 +71,18 @@ for %mdfils.keys -> $f is copy {
 
 #### subroutines ####
 sub create-md($f) {
-    # %h{$fname}<title> = $title 
+    # %h{$fname}<title> = $title
     #           <subs>{$subname} = @lines
 
     my $fname;   # current output file name
     my $title;   # current title for the file contents
     my $subname; # current sub name
-    
+
     # open the desired module file
     my $fp = open $f;
     for $fp.lines -> $line is copy {
         say $line if $debug;
-        next if $line !~~ / \S /; # skip empty lines 
+        next if $line !~~ / \S /; # skip empty lines
         # ensure there is a space following any leading '#'
         $line ~~ s/^ \s* '#' \S /^\# /;
         my @words = $line.words;
@@ -111,7 +111,7 @@ sub create-md($f) {
             }
             elsif $kw eq 'Subroutine' {
                 # update the subroutine name
-                $subname = $val; 
+                $subname = $val;
                 # start a new array
                 %mdfils{$fname}<subs>{$subname} = [];
                 %mdfils{$fname}<subs>{$subname}.push($txt);
@@ -144,7 +144,7 @@ sub create-md($f) {
             my $idx = index $sig, ')';
             if $idx.defined {
                 my $line1 = substr $sig, 0, $idx + 1;
-                my $line2 = substr $sig, $idx + 1; 
+                my $line2 = substr $sig, $idx + 1;
                 $idx = index $line2, '{';
                 if !$idx.defined {
                     die "FATAL: unable to find an opening '\{' in sub sig '$sig'";
@@ -153,12 +153,12 @@ sub create-md($f) {
                 # add closure after the opening curly to indcate the sub block
                 $line2 ~= '#...}';
                 $line2 .= trim;
-                $line2 = '  ' ~ $line2; 
+                $line2 = '  ' ~ $line2;
                 # is either line too long?
-                my $nc1 = $line1.chars; 
-                my $nc2 = $line2.chars; 
+                my $nc1 = $line1.chars;
+                my $nc2 = $line2.chars;
                 if $debug {
-                    my $m = $max-line-length; 
+                    my $m = $max-line-length;
                     say "line1 > $m chars (=$nc1)" if $nc1 > $m;
                     say "line2 > $m chars (=$nc2)" if $nc2 > $m;
                 }
@@ -175,12 +175,12 @@ sub create-md($f) {
             }
             # push the lines on the current elementg
             say "DEBUG: sub sig lines" if $debug;
-            %mdfils{$fname}<subs>{$subname}.push("'''perl6");
+            %mdfils{$fname}<subs>{$subname}.push("```perl6");
             for @lines -> $line {
                 %mdfils{$fname}<subs>{$subname}.push($line);
                 say "  line: '$line'" if $debug;
             }
-            %mdfils{$fname}<subs>{$subname}.push("'''");
+            %mdfils{$fname}<subs>{$subname}.push("```");
         }
     }
 }
@@ -210,7 +210,7 @@ sub shorten-sub-sig-lines(@lines is rw) {
 
 
 #    my $sig = join ' ', @lines;
-    
+
 }
 
 sub normalize-string($str) {
@@ -230,7 +230,7 @@ sub get-kw-line-data(:$val, :$kw, :@words is copy) returns Str {
             # pass back just the sub name with leading markup
             $txt ~= $val if $val;
             $txt ~= ' ' ~ @words[1];
-            # add a leading newline to provide spacing between 
+            # add a leading newline to provide spacing between
             # the preceding subroutine
             $txt = "\n" ~ $txt;
         }
@@ -262,4 +262,3 @@ sub get-kw-line-data(:$val, :$kw, :@words is copy) returns Str {
 
     return $txt;
 }
-
