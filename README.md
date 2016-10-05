@@ -12,6 +12,11 @@ See the Wikipedia article
 introduction to IP addresses along with links to the authoritative
 RFCs.
 
+## Status
+
+This early version (less than 1.0.0) is considered usable, but the
+APIs are subject to change until version 1.0.0 is released.
+
 ## Debugging
 
 For debugging, use one the following methods:
@@ -35,7 +40,7 @@ use Net::IP::Lite;
 ```
 
 See
-[DEFAULT-SUBS](https://github.com/tbrowder/Net-IP-Lite-Perl6/blob/master/DEFAULT-SUBS.md)
+[DEFAULT-SUBS](https://github.com/tbrowder/Net-IP-Lite-Perl6/blob/master/docs/DEFAULT-SUBS.md)
 for a list of default-exported subroutines, each with a short
 description along with its complete signature.
 
@@ -56,7 +61,7 @@ handy numerical base conversion routines that may not be available elsewhere:
 - dec2hex
 - dec2bin
 
-See [UTIL-SUBS](https://github.com/tbrowder/Net-IP-Lite-Perl6/blob/master/UTIL-SUBS.md)
+See [UTIL-SUBS](https://github.com/tbrowder/Net-IP-Lite-Perl6/blob/master/docs/UTIL-SUBS.md)
 for details of each plus some other utility subroutines.
 
 ## Current Limitations

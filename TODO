@@ -7,10 +7,8 @@ version 1.0.0
 
 ask for comments from #perl6 (pending receipt of comments...)
 
-add ip-reverse-net sub? or part of sub ip-reverse-address?
-
 consider changing to check ip version inside other functions and not
-  requiring ip-version in params; should changes some subs to
+  requiring ip-version in params; should change some subs to
  export(:util) as a result
 
 create a script and make target to produce the DEFAULT-SUBS.md and
@@ -23,6 +21,8 @@ add suitable tags to META6.json
 ------------------------------------------
 DONE:
 ------------------------------------------
+
+add ip-reverse-net sub? or part of sub ip-reverse-address? (DONE)
 
 change to verision 0.1.0 (DONE)
 
