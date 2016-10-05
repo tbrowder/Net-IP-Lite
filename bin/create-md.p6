@@ -175,17 +175,17 @@ sub create-md($f) {
             }
             # push the lines on the current elementg
             say "DEBUG: sub sig lines" if $debug;
-            %mdfils{$fname}<subs>{$subname}.push("```perl6");
+            %mdfils{$fname}<subs>{$subname}.push('```perl6');
             for @lines -> $line {
                 %mdfils{$fname}<subs>{$subname}.push($line);
                 say "  line: '$line'" if $debug;
             }
-            %mdfils{$fname}<subs>{$subname}.push("```");
+            %mdfils{$fname}<subs>{$subname}.push('```');
         }
     }
 }
 
-sub shorten-sub-sig-lines(@lines is rw) {
+sub shorten-sub-sig-lines(@lines) {
     # collect stats
     my $nl = +@lines;
     my %nc;
@@ -193,7 +193,7 @@ sub shorten-sub-sig-lines(@lines is rw) {
     my $maxid = 0;
     my $i = 0;
     for @lines -> $line {
-        my $m = $ine.chars;
+        my $m = $line.chars;
         %nc{$i} = $m;
         if $m > $max {;
             $max = $m;
@@ -201,7 +201,7 @@ sub shorten-sub-sig-lines(@lines is rw) {
         }
     }
 
-    return if $max <= $max-sig-line-length;
+    return if $max <= $max-line-length;
 
     # assume the user deliberately edited the signature if > two lines
     return if +@lines > 2;
