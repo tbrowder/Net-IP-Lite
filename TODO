@@ -2,17 +2,17 @@
 REQUIREMENTS FOR INITIAL RELEASE
 ===========================================
 
-add README.md remark about possible doc and API changes prior to
-version 1.0.0
+add ip-reverse-net sub? or part of sub ip-reverse-address? add test
+for it
+
+create a script and make target to produce the DEFAULT-SUBS.md and
+  UTIL-SUBS.md in the ./docs dir
 
 ask for comments from #perl6 (pending receipt of comments...)
 
 consider changing to check ip version inside other functions and not
   requiring ip-version in params; should change some subs to
- export(:util) as a result
-
-create a script and make target to produce the DEFAULT-SUBS.md and
-  UTIL-SUBS.md in the ./docs diir; correct links in README.md
+  export(:util) as a result
 
 consider removing ip- prefix to subs
 
@@ -22,7 +22,10 @@ add suitable tags to META6.json
 DONE:
 ------------------------------------------
 
-add ip-reverse-net sub? or part of sub ip-reverse-address? (DONE)
+correct links to sub docs in README.md (DONE)
+
+add README.md remark about possible doc and API changes prior to
+version 1.0.0 (DONE)
 
 change to verision 0.1.0 (DONE)
 
