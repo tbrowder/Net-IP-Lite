@@ -113,6 +113,9 @@ installation, cloning this project will result in a Makefile that can
 be used in fine-tuning tests and yielding more verbose results during
 the development process. The Makefile can be tailored as desired.
 
+ Note the bin directory has a utility program to generate markdown
+files with certain formatting.
+
 ## Acknowledgements
 
 This module is indebted to the CPAN Perl
