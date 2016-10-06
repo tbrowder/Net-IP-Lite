@@ -171,97 +171,129 @@ sub create-md($f) {
         elsif $line ~~ /^ sub \s* / {
             # start sub signature
             say "found sub sig '$line'" if $debug;
-            my $sig = $line.trim;
-            if $line !~~ / '{' / {
+            my @sublines;
+            # get the whole signature
+            while $line !~~ / '{' / {
                 # not the end of signature
-                my $nextline = $fp.get.trim;
-                say "next line: $nextline" if $debug;
-                # just in case sig spans multiple lines:
-                while $nextline !~~ / '{' / {
-                    $sig ~= ' ' ~ $nextline;
-                }
-                # don't forget the last chunk with the opening curly brace
-                $sig ~= ' ' ~ $nextline;
-                say "complete sub sig '$sig'" if $debug;
+                @sublines.push: $line;
+                $line = $fp.get;
+                say "next line: $line" if $debug;
+            }
+            # don't forget the last chunk with the opening curly brace
+            say "=== DEBUG last line sub sig: '$line'" if $debug;
+	    # first add a closing '}'
+            my $idx = rindex $line, '{';
+            if !$idx.defined {
+                die "FATAL: unable to find an opening '\{' in sub sig line '$line'";
+            }
+            $line = substr $line, 0, $idx + 1;
+            # add closure after the opening curly to indcate the sub block
+            $line ~= '#...}';
+	    # finally, add to the sublines array
+            @sublines.push: $line;
 
+            if $debug {
+                say "=== complete sub sig:";
+                for @sublines {
+                    say $_;
+                }
+                say "=== end complete sub sig:";
             }
 
-            # tidy the line into two (or more) lines (unless user declines
-            my @lines;
-            my $idx = index $sig, ')';
-            if $idx.defined {
-                my $line1 = substr $sig, 0, $idx + 1;
-                my $line2 = substr $sig, $idx + 1;
-                $idx = index $line2, '{';
-                if !$idx.defined {
-                    die "FATAL: unable to find an opening '\{' in sub sig '$sig'";
-                }
-                $line2 = substr $line2, 0, $idx + 1;
-                # add closure after the opening curly to indcate the sub block
-                $line2 ~= '#...}';
-                $line2 .= trim;
-                $line2 = '  ' ~ $line2;
+            # tidy the line into two (or more) lines (unless user declines)
+            @sublines = fold-sub-lines(@sublines) if !$nofold;
 
-                @lines.push: $line1;
-                @lines.push: $line2;
-
-		# fold lines if they're too long
-                my ($maxlen, $maxid) = analyze-line-lengths(@lines);
-                if $maxlen > $max-line-length {
-                    @lines = shorten-sub-sig-lines(@lines, $maxid);
-                }
-            }
-            else {
-                die "FATAL: unable to find a closing ')' in sub sig '$sig'";
-            }
-
-            # push the lines on the current element
+            # push lines on the current element
             say "DEBUG: sub sig lines" if $debug;
             # need a line to indicate perl 6 code
-            %mdfils{$fname}<subs>{$subname}.push('```perl6');
-            for @lines -> $line {
-                %mdfils{$fname}<subs>{$subname}.push($line);
+            %mdfils{$fname}<subs>{$subname}.push: '```perl6';
+            for @sublines -> $line {
+                %mdfils{$fname}<subs>{$subname}.push: $line;
                 say "  line: '$line'" if $debug;
             }
             # need a line to indicate end of perl 6 code
-            %mdfils{$fname}<subs>{$subname}.push('```');
+            %mdfils{$fname}<subs>{$subname}.push: '```';
         }
     }
 }
 
 #### subroutines ####
-sub shorten-sub-sig-lines(@lines is copy, $maxid) {
+sub fold-sub-lines(@sublines) returns List {
+    # get one long string to start with
+    my $sig = join ' ', @sublines;
 
-    # we assume the user deliberately edited the signature if > two
-    # lines and just return the lines
-    return @lines if +@lines > 2;
+    # first we break into two lines after the params ')'
+    my @lines;
+    my $idx = index $sig, ')';
+    die "FATAL: unable to find a closing ')' in sub sig '$sig'" if !$idx.defined;
 
+    my $line1 = substr $sig, 0, $idx + 1;
+    my $line2 = substr $sig, $idx + 1;
+    # error check
+    $idx = index $line2, '{#...}';
+    if !$idx.defined {
+        die "FATAL: unable to find ending '\{#...} ' in sub sig '$sig'";
+    }
+    # put two spaces leading the second line
+    $line2 .= trim;
+    $line2 = '  ' ~ $line2;
+
+
+    @lines.push: $line1;
+    @lines.push: $line2;
+
+    # fold lines if they're too long
+    my ($maxlen, $maxid) = analyze-line-lengths(@lines);
+    if $maxlen > $max-line-length {
+        @lines = shorten-sub-sig-lines(@lines);
+    }
+
+    # return the folded lines
+    return @lines;
+
+}
+
+sub shorten-sub-sig-lines(@siglines) returns List {
     # treat the longest line which normally should be the first one
     # we'll first fold the line at the last comma in the param list
     # then we recalc and reanalyze
 
-    my $line1 = shift @lines;
-    my $line2 = shift @lines;
+    my $nl = +@siglines;
+    die "FATAL: should have 2 lines but have $nl" if $nl != 2;
+    my ($line1, $line2) = @siglines[0..1];
 
-    if $maxid == 0 {
-	# find last comma in param list, if any
-	my $idx = rindex $line1, ',';
-	if $idx.defined {
-	    my $line1-a = substr $line1, 0, $idx + 1; # keep the comma on this line
-	    my $line1-b = substr $line1, $idx + 1;    # take remainder of the line
-	    $line1-b .= trim;
-	    #  we want leading whitespace on the second line so it
-	    # lines up one char past left paren
-	    my $idx2 = index $line1-a, '(';
-	    die "FATAL: unexpected missing '(', line: '$line1'" if !$idx2.defined;
-	    my $spaces = ' ' x $idx2 + 1;
-	    $line1-b = $spaces ~ $line1-b;
-	    @lines = [];
-	    @lines.push: $line1-a, $line1-b, $line2;
-	}
+    # new list for folded lines
+    my @lines = [];
+
+    # find last comma in param list, if any
+    my $idx = rindex $line1, ',';
+    if $idx.defined {
+	my $line1-a = substr $line1, 0, $idx + 1; # keep the comma on this line
+	my $line1-b = substr $line1, $idx + 1;    # take remainder of the line
+	$line1-b .= trim;
+	#  we want leading whitespace on the second line so it
+	# lines up one char past left paren
+	my $idx2 = index $line1-a, '(';
+	die "FATAL: unexpected missing '(', line: '$line1'" if !$idx2.defined;
+	my $spaces = ' ' x $idx2 + 1;
+	$line1-b = $spaces ~ $line1-b;
+	@lines.push: $line1-a;
+	@lines.push: $line1-b;
+	@lines.push: $line2;
     }
     else {
-	die "FATAL: Don't know how to handle second line as longest";
+	say "FATAL: Don't know how to handle second line as longest";
+        die "FATAL: file a bug report";
+    }
+
+    # any improvement?
+    my ($maxlen, $maxid) = analyze-line-lengths(@lines);
+    if $maxlen > $max-line-length {
+	say "FATAL: Don't know how to handle these sub lines where line $maxid is too long:";
+	for @lines {
+	    say $_;
+	}
+        die "FATAL: file a bug report";
     }
 
     return @lines;
