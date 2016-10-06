@@ -1,8 +1,12 @@
-===========================================
-REQUIREMENTS FOR INITIAL RELEASE
-===========================================
+======================================
+REQUIREMENTS FOR INITIAL, BETA RELEASE
+======================================
 
-mention md create utility
+DONE
+
+======================================
+REQUIREMENTS FOR NEXT BETA RELEASE
+======================================
 
 consider changing to check ip version inside other functions and not
   requiring ip-version in params; should change some subs to
@@ -10,20 +14,22 @@ consider changing to check ip version inside other functions and not
 
 consider removing ip- prefix to subs
 
-modify create md so user opts for fiddling with sig lines or not
-
-modify create md so sig lines are collected and then folded (user has
-  opted for such on the CLI)
-
-be sure and report if sig lines are too long if user has opted out;
-
-report results of sig folding
-
-use Getopt::Long
-
 ------------------------------------------
 DONE:
 ------------------------------------------
+
+report results of sig folding (if verbose) (DONE)
+
+modify create md so user opts for fiddling with sig lines or not (DONE)
+
+modify create md so sig lines are collected and then folded (user has
+  opted for such on the CLI) (DONE)
+
+be sure and report if sig lines are too long if user has opted out (DONE)
+
+mention md create utility (DONE)(
+
+use Getopt::Long (DONE)
 
 create a script and make target to produce the DEFAULT-SUBS.md and
   UTIL-SUBS.md in the ./docs dir; need line-wrap for long sigs (e.g.,
@@ -80,8 +86,6 @@ for base conversions (except single-character ones) make sure
 
 add length capability where warranted (add tests) (DONE)
 
-replace warn and fail with diag? (NO)
-
 finish reverse function; add tests (DONE)
 
 get compress working for ipv6 (DONE)
@@ -93,11 +97,21 @@ use loop construct in places with explicit list for statements (DONE)
 remove type constraints from ip type check funcs (DONE)
 
 ====================================
-REQUIREMENTS FOR A FOLLOW-ON RELEASE
+REQUIREMENTS FOR STABLE RELEASE
 ====================================
 
-add capability to handle CIDR notation
+enhance folding capability of create md (make more robust)
+
+improve fold reporting
 
 tidy failure messages, use fail consistently
 
 add Makefile target to generate text from pod in the module
+
+handle bug and issue reports
+
+========================================
+REQUIREMENTS FOR A FUTURE STABLE RELEASE
+========================================
+
+add capability to handle CIDR notation
