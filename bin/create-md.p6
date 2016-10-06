@@ -1,31 +1,78 @@
 #!/usr/bin/env perl6
 
-my $p = $*PROGRAM;
-if !@*ARGS {
-   print qq:to/END/;
-   Usage: $p <module file> [output dir] [debug]
+use Getopt::Std;
 
-   Reads the modulefile and extracts properly formatted comments
-   into markdown files describing the subs and other objects
-   contained therein.  Output files are created in the
-   [output dir] if entered, or the current directory
+my $max-line-length = 78;
+
+##### option handling ##############################
+my %opts; # Getopts::Std requires this (name it anything you want)
+my ($mfil, $odir, $nofold, $debug, $verbose);
+my $usage = "Usage: $*PROGRAM -m <file> | -h[elp] [-d <odir>, -N, -M <max>, -D]";
+sub usage() {
+   print qq:to/END/;
+   $usage
+
+   Reads the input module file and extracts properly formatted
+   comments into markdown files describing the subs and other objects
+   contained therein.  Output files are created in the output
+   directory (-d <dir>) if entered, or the current directory
    otherwise.
+
+   Subroutine signature lines are folded into a nice format for the
+   markdown files unless the user uses the -N (no-fold) option.  The
+   -M <max> option specifies a user-desired maximum line length for
+   folding.
 
    For an example, the markdown files in the docs directory
    in this repository were created with this program.
 
+   Modes:
+
+     -m <module file>
+     -h help
+
+   Options:
+
+     -d <output directory>    default: current directory
+     -M <max line length>     default: $max-line-length
+
+     -N do NOT format or modify sub signature lines to max length
+     -v verbose
+     -D debug
    END
 
    exit;
 }
 
-my $modfil = shift @*ARGS;
-my $tgtdir = shift @*ARGS;
-my $debug  = shift @*ARGS;
-$tgtdir = '' if !$tgtdir;
-$debug  = 0 if !$debug;
+# provide a short msg if no args
+if !@*ARGS {
+    say $usage;
+    exit;
+}
+# check for proper getopts signature
+usage() if !getopts(
+    'hfDv' ~ 'm:d:M:',  # option string (':' following an arg means a value for the arg is required)
+    %opts,
+    @*ARGS
+);
+# error check: %opts must exist
+#usage() if !%opts;
+usage() if %opts<h>;
+# check mandatory args
+#usage() if !%opts<m>;
+$mfil  = %opts<m>;
 
-my $max-line-length = 78;
+# set options
+$odir            = %opts<d> ?? %opts<d> !! '';
+$max-line-length = %opts<M> if %opts<M>;
+$debug           = True if %opts<D>;
+$verbose         = True if %opts<v>;
+$nofold          = True if %opts<N>;
+##### end option handling ##########################
+
+# aliases
+my $modfil = $mfil;
+my $tgtdir = $odir;
 
 my %kw = [
     'Subroutine' => '###',
@@ -139,7 +186,7 @@ sub create-md($f) {
 
             }
 
-            # tidy the line into two lines
+            # tidy the line into two (or more) lines (unless user declines
             my @lines;
             my $idx = index $sig, ')';
             if $idx.defined {
@@ -154,71 +201,103 @@ sub create-md($f) {
                 $line2 ~= '#...}';
                 $line2 .= trim;
                 $line2 = '  ' ~ $line2;
-                # is either line too long?
-                my $nc1 = $line1.chars;
-                my $nc2 = $line2.chars;
-                if $debug {
-                    my $m = $max-line-length;
-                    say "line1 > $m chars (=$nc1)" if $nc1 > $m;
-                    say "line2 > $m chars (=$nc2)" if $nc2 > $m;
-                }
-                if 0 && max($nc1, $nc2) > $max-line-length {
-                    @lines = shorten-sub-sig-lines(@lines);
-                }
-                else {
-                    push @lines, $line1;
-                    push @lines, $line2;
+
+                @lines.push: $line1;
+                @lines.push: $line2;
+
+		# fold lines if they're too long
+                my ($maxlen, $maxid) = analyze-line-lengths(@lines);
+                if $maxlen > $max-line-length {
+                    @lines = shorten-sub-sig-lines(@lines, $maxid);
                 }
             }
             else {
                 die "FATAL: unable to find a closing ')' in sub sig '$sig'";
             }
-            # push the lines on the current elementg
+
+            # push the lines on the current element
             say "DEBUG: sub sig lines" if $debug;
+            # need a line to indicate perl 6 code
             %mdfils{$fname}<subs>{$subname}.push('```perl6');
             for @lines -> $line {
                 %mdfils{$fname}<subs>{$subname}.push($line);
                 say "  line: '$line'" if $debug;
             }
+            # need a line to indicate end of perl 6 code
             %mdfils{$fname}<subs>{$subname}.push('```');
         }
     }
 }
 
-sub shorten-sub-sig-lines(@lines) {
+#### subroutines ####
+sub shorten-sub-sig-lines(@lines is copy, $maxid) {
+
+    # we assume the user deliberately edited the signature if > two
+    # lines and just return the lines
+    return @lines if +@lines > 2;
+
+    # treat the longest line which normally should be the first one
+    # we'll first fold the line at the last comma in the param list
+    # then we recalc and reanalyze
+
+    my $line1 = shift @lines;
+    my $line2 = shift @lines;
+
+    if $maxid == 0 {
+	# find last comma in param list, if any
+	my $idx = rindex $line1, ',';
+	if $idx.defined {
+	    my $line1-a = substr $line1, 0, $idx + 1; # keep the comma on this line
+	    my $line1-b = substr $line1, $idx + 1;    # take remainder of the line
+	    $line1-b .= trim;
+	    #  we want leading whitespace on the second line so it
+	    # lines up one char past left paren
+	    my $idx2 = index $line1-a, '(';
+	    die "FATAL: unexpected missing '(', line: '$line1'" if !$idx2.defined;
+	    my $spaces = ' ' x $idx2 + 1;
+	    $line1-b = $spaces ~ $line1-b;
+	    @lines = [];
+	    @lines.push: $line1-a, $line1-b, $line2;
+	}
+    }
+    else {
+	die "FATAL: Don't know how to handle second line as longest";
+    }
+
+    return @lines;
+
+}
+
+# candidate for a util module
+sub analyze-line-lengths(@lines) returns List {
+    # returns:
+    #   max line length in the input array
+    #   the index of the longest line
+
     # collect stats
     my $nl = +@lines;
     my %nc;
-    my $max   = 0;
-    my $maxid = 0;
+    my $maxlen = 0;
+    my $maxid  = 0;
     my $i = 0;
     for @lines -> $line {
         my $m = $line.chars;
         %nc{$i} = $m;
-        if $m > $max {;
-            $max = $m;
-            $maxid = $i;
+        if $m > $maxlen {;
+            $maxlen = $m;
+            $maxid  = $i;
         }
     }
 
-    return if $max <= $max-line-length;
+    return ($maxlen, $maxid);
 
-    # assume the user deliberately edited the signature if > two lines
-    return if +@lines > 2;
+} # analyze-line-lengths
 
-    # treat the longest line which normally should be the first one
-
-
-#    my $sig = join ' ', @lines;
-
-}
-
+# candidate for a util module
 sub normalize-string($str) {
-    $str ~~ s:g/\s ** 2..*/ /;
-}
+    $str ~~ s:g/ \s ** 2..*/ /;
+} # normalize-string
 
-
-#### subroutines ####
 sub get-kw-line-data(:$val, :$kw, :@words is copy) returns Str {
     say "TOM FIX THIS TO HANDLE EACH KEYWORD PROPERLY" if $debug;
     say "DEBUG: reduced \@words array" if $debug;
@@ -252,6 +331,7 @@ sub get-kw-line-data(:$val, :$kw, :@words is copy) returns Str {
             $txt ~= ' ' ~ join ' ', @words;
         }
         when 'file:'      {
+            # don't need anything special
         }
         when 'title:'     {
             # pass back all with leading markup
