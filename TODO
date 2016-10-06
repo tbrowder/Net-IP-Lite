@@ -19,6 +19,8 @@ be sure and report if sig lines are too long if user has opted out;
 
 report results of sig folding
 
+use Getopt::Long
+
 ------------------------------------------
 DONE:
 ------------------------------------------
