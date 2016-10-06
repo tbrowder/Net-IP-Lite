@@ -18,5 +18,8 @@
 	"Test::META"
     ],
     "resources" : [
+    ],
+    "tags" : [
+	"Net", "IP", "IP address", "IPv4", "IPv6"
     ]
 }
