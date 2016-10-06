@@ -10,6 +10,15 @@ consider changing to check ip version inside other functions and not
 
 consider removing ip- prefix to subs
 
+modify create md so user opts for fiddling with sig lines or not
+
+modify create md so sig lines are collected and then folded (user has
+  opted for such on the CLI)
+
+be sure and report if sig lines are too long if user has opted out;
+
+report results of sig folding
+
 ------------------------------------------
 DONE:
 ------------------------------------------
