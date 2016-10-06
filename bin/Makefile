@@ -3,4 +3,4 @@ MFIL = ../lib/Net/IP/Lite.pm6
 TDIR = ../docs
 
 create:
-	$(PROG) $(MFIL) $(TDIR)
+	$(PROG) -m $(MFIL) -d $(TDIR)

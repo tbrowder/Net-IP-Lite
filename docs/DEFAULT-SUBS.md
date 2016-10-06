@@ -5,7 +5,8 @@
 - Params  : bit string, IP version
 - Returns : IP address on success, undef otherwise
 ```perl6
-sub ip-bintoip(Str:D $binip is copy where &binary, UInt $ip-version where &ip-version)
+sub ip-bintoip(Str:D $binip is copy where &binary,
+               UInt $ip-version where &ip-version)
   returns Str is export {#...}
 ```
 
@@ -77,7 +78,8 @@ sub ip-is-ipv6(Str:D $ip is copy)
 - Params  : IP address
 - Returns : IP address with no unneeded zeroes
 ```perl6
-sub ip-remove-leading-zeroes(Str:D $ip is copy, UInt $ip-version where &ip-version)
+sub ip-remove-leading-zeroes(Str:D $ip is copy,
+                             UInt $ip-version where &ip-version)
   returns Str is export {#...}
 ```
 
@@ -91,7 +93,7 @@ sub ip-reverse-address(Str:D $ip is copy, UInt $ip-version where &ip-version)
 ```
 
 ### ip-reverse-domain
-- Purpose : Reverse a domain name
+- Purpose : Reverse a domain name (only if FQDN, i.e., with dots)
 - Params  : Domain name
 - Returns : Reversed name
 ```perl6

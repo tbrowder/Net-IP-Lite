@@ -3,7 +3,7 @@ unit module Net::IP::Lite:ver<0.1.0>:auth<Tom Browder (tom.browder@gmail.com)>;
 # file: DEFAULT-SUBS.md
 # title: Subroutines Exported by Default
 
-# export a debug var for usersx
+# export a debug var for users
 our $DEBUG = False;
 BEGIN {
     if %*ENV<NET_IP_LITE_DEBUG> {
@@ -16,27 +16,27 @@ BEGIN {
 
 # define tokens for common regexes
 my token binary           { ^ <[01]>+ $ }
-my token hexadecimal      { :i ^ <[a..f\d]>+ $ }
-my token hexadecimalchar  { :i ^ <[a..f\d]> $ }
-my token ip-version       { ^ <[46]> $ }
-my token decimal          { ^ \d+ $ }
-my token domain           { ^ \d+ $ }
+my token decimal          { ^ \d+ $ }              # actually an int
+my token domain           { :i ^ <[\w\d\-\.]>+ $ } # allowable chars, needs to be more constrained
+my token hexadecimal      { :i ^ <[a..f\d]>+ $ }   # multiple chars
+my token hexadecimalchar  { :i ^ <[a..f\d]> $ }    # single char
+my token ip-version       { ^ <[46]> $ }           # only two versions
 
 #------------------------------------------------------------------------------
 # Subroutine ip-reverse-domain
-# Purpose : Reverse a domain name
+# Purpose : Reverse a domain name (only if FQDN, i.e., with dots)
 # Params  : Domain name
 # Returns : Reversed name
 sub ip-reverse-domain(Str:D $dom is copy) returns Str is export {
     # check for validity
-    unless $dom &domain {
-	return $dom if !~~ / '.' /;
+    if $dom ~~ &domain {
+	return $dom unless $dom ~~ / '.' /;
 	my @d = split '.', $dom;
 	@d .= reverse;
 	return join '.', @d;
     }
 
-    return;
+    return $dom;
 } # ip-reverse-domain
 
 #------------------------------------------------------------------------------
@@ -70,8 +70,7 @@ sub ip-reverse-address(Str:D $ip is copy, UInt $ip-version where &ip-version) re
 # Purpose : Transform a bit string into an IP address
 # Params  : bit string, IP version
 # Returns : IP address on success, undef otherwise
-sub ip-bintoip(Str:D $binip is copy where &binary,
-               UInt $ip-version where &ip-version) returns Str is export {
+sub ip-bintoip(Str:D $binip is copy where &binary, UInt $ip-version where &ip-version) returns Str is export {
 
     # Define normal size for address
     my $len = ip-iplengths($ip-version);
