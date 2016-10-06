@@ -201,7 +201,7 @@ sub create-md($f) {
             }
 
             # tidy the line into two (or more) lines (unless user declines)
-            @sublines = fold-sub-lines(@sublines) if !$nofold;
+            @sublines = fold-sub-lines(@sublines, $subname) if !$nofold;
 
             # push lines on the current element
             say "DEBUG: sub sig lines" if $debug;
@@ -218,7 +218,7 @@ sub create-md($f) {
 }
 
 #### subroutines ####
-sub fold-sub-lines(@sublines) returns List {
+sub fold-sub-lines(@sublines, $subname) returns List {
     # get one long string to start with
     my $sig = join ' ', @sublines;
 
@@ -249,6 +249,7 @@ sub fold-sub-lines(@sublines) returns List {
     }
 
     # return the folded lines
+    say "NOTE:  sub '$subname' lines were folded" if $verbose;
     return @lines;
 
 }
