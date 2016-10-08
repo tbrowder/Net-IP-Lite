@@ -1,11 +1,11 @@
 {
     "perl"        : "6.c",
     "name"        : "Net::IP::Lite",
-    "version"     : "0.1.1",
+    "version"     : "0.1.2",
     "description" : "Provides utility functions for dealing with IPv4 and IPv6 addresses.",
     "authors"     : [ "Tom Browder <tom.browder@gmail.com>" ],
     "license"     : "Artistic 2.0",
-    "source-url"  : "https://github.com/tbrowder/Net-IP-Lite-Perl6/archive/Net-IP-Lite-Perl6-0.1.1.tar.gz",
+    "source-url"  : "https://github.com/tbrowder/Net-IP-Lite-Perl6/archive/0.1.2.zip,
     "support"     : {
         "bugtracker" : "https://github.com/tbrowder/Net-IP-Lite-Perl6/issues",
         "source"     : "https://github.com/tbrowder/Net-IP-Lite-Perl6"
