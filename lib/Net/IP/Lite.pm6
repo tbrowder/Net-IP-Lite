@@ -1,4 +1,4 @@
-unit module Net::IP::Lite;
+unit module Net::IP::Lite:auth<github:tbrowder>;
 
 # file: DEFAULT-SUBS.md
 # title: Subroutines Exported by Default
