@@ -1,4 +1,4 @@
-unit module Net::IP::Lite:ver<0.1.2>:auth<Tom Browder (tom.browder@gmail.com)>;
+unit module Net::IP::Lite;
 
 # file: DEFAULT-SUBS.md
 # title: Subroutines Exported by Default
