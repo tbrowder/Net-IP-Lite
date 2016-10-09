@@ -5,7 +5,7 @@
     "description" : "Provides utility functions for dealing with IPv4 and IPv6 addresses.",
     "authors"     : [ "github:tbrowder" ],
     "license"     : "Artistic 2.0",
-    "source-url"  : "https://github.com/tbrowder/Net-IP-Lite-Perl6/archive/0.1.4.zip",
+    "source-url"  : "https://github.com/tbrowder/Net-IP-Lite-Perl6/archive/0.1.5.zip",
     "support"     : {
         "bugtracker" : "https://github.com/tbrowder/Net-IP-Lite-Perl6/issues",
         "source"     : "https://github.com/tbrowder/Net-IP-Lite-Perl6"
