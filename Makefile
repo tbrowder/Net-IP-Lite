@@ -1,5 +1,6 @@
 PERL6     := perl6
-LIBPATH   := lib
+# note LIBPATH does NOT use normal PERL6LIB Perl 6 separators (',')
+LIBPATH   := lib:../Misc-Utils/lib
 
 # set below to 1 for no effect, 1 for debugging messages
 DEBUG := NET_IP_LITE_DEBUG=0
