@@ -8,7 +8,7 @@
     "source-url"  : "https://github.com/tbrowder/Net-IP-Lite-Perl6/archive/0.1.5.zip",
     "support"     : {
         "bugtracker" : "https://github.com/tbrowder/Net-IP-Lite-Perl6/issues",
-        "source"     : "https://github.com/tbrowder/Net-IP-Lite-Perl6/tree/0.1.4"
+        "source"     : "https://github.com/tbrowder/Net-IP-Lite-Perl6/tree/0.1.5"
     },
     "provides"    : {
         "Net::IP::Lite" : "lib/Net/IP/Lite.pm6"
@@ -17,7 +17,8 @@
 	"Test::META"
     ],
     "depends" : [
-	"Misc::Utils"
+        "Number::More",
+	"Text::More"
     ],
     "resources" : [
     ],
