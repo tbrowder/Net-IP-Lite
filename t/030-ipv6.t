@@ -1,7 +1,7 @@
 use v6;
 use Test;
 
-use Net::IP::Lite;
+use Net::IP::Lite :ALL;
 
 plan 20;
 

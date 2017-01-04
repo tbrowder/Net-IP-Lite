@@ -27,7 +27,7 @@ my token ip-version       { ^ <[46]> $ }           # only two versions
 # Purpose : Reverse a domain name (only if FQDN, i.e., with dots)
 # Params  : Domain name
 # Returns : Reversed name
-sub ip-reverse-domain(Str:D $dom is copy --> Str) is export {
+sub ip-reverse-domain(Str:D $dom is copy --> Str) is export(:ip-reverse-domain) {
     # check for validity
     if $dom ~~ &domain {
 	return $dom unless $dom ~~ / '.' /;
@@ -44,7 +44,7 @@ sub ip-reverse-domain(Str:D $dom is copy --> Str) is export {
 # Purpose : Reverse an IP address, use dots for separators for all types
 # Params  : IP address, IP version
 # Returns : Reversed IP address on success, undef otherwise
-sub ip-reverse-address(Str:D $ip is copy, UInt $ip-version where &ip-version --> Str) is export {
+sub ip-reverse-address(Str:D $ip is copy, UInt $ip-version where &ip-version --> Str) is export(:ip-reverse-address) {
 
     my $sep = $ip-version == 4 ?? '.' !! ':';
 
@@ -70,7 +70,7 @@ sub ip-reverse-address(Str:D $ip is copy, UInt $ip-version where &ip-version -->
 # Purpose : Transform a bit string into an IP address
 # Params  : bit string, IP version
 # Returns : IP address on success, undef otherwise
-sub ip-bintoip(Str:D $binip is copy where &binary, UInt $ip-version where &ip-version --> Str) is export {
+sub ip-bintoip(Str:D $binip is copy where &binary, UInt $ip-version where &ip-version --> Str) is export(:ip-bintoip) {
 
     # Define normal size for address
     my $len = ip-iplengths($ip-version);
@@ -124,7 +124,7 @@ sub ip-bintoip(Str:D $binip is copy where &binary, UInt $ip-version where &ip-ve
 # Purpose : Remove leading (unneeded) zeroes from octets or quads
 # Params  : IP address
 # Returns : IP address with no unneeded zeroes
-sub ip-remove-leading-zeroes(Str:D $ip is copy, UInt $ip-version where &ip-version --> Str) is export {
+sub ip-remove-leading-zeroes(Str:D $ip is copy, UInt $ip-version where &ip-version --> Str) is export(:ip-remove-leading-zeroes) {
 
     # IPv6 addresses must be expanded first
     $ip = ip-expand-address($ip, $ip-version) if $ip-version == 6;
@@ -159,7 +159,7 @@ sub ip-remove-leading-zeroes(Str:D $ip is copy, UInt $ip-version where &ip-versi
 # Purpose : Compress an IPv6 address
 # Params  : IP, IP version
 # Returns : Compressed IP or undef (problem)
-sub ip-compress-address(Str:D $ip is copy, UInt $ip-version where &ip-version --> Str) is export {
+sub ip-compress-address(Str:D $ip is copy, UInt $ip-version where &ip-version --> Str) is export(:ip-compress-address) {
 
     # already compressed addresses must be expanded first
     $ip = ip-expand-address($ip, $ip-version) if $ip-version == 6;
@@ -211,7 +211,7 @@ sub ip-compress-address(Str:D $ip is copy, UInt $ip-version where &ip-version --
 # Purpose : Transform an IP address into a bit string
 # Params  : IP address, IP version
 # Returns : bit string on success, undef otherwise
-sub ip-iptobin(Str:D $ip is copy, UInt $ipversion --> Str) is export {
+sub ip-iptobin(Str:D $ip is copy, UInt $ipversion --> Str) is export(:ip-iptobin) {
 
     # v4 -> return 32-bit array
     if $ipversion == 4 {
@@ -270,7 +270,7 @@ sub ip-iptobin(Str:D $ip is copy, UInt $ipversion --> Str) is export {
 # Purpose : Get the length in bits of an IP from its version
 # Params  : IP version
 # Returns : Number of bits: 32, 128, 0 (don't know)
-sub ip-iplengths(UInt:D $version UInt) is export {
+sub ip-iplengths(UInt:D $version --> UInt) is export(:ip-iplengths) {
     if $version == 4 {
         return 32;
     }
@@ -288,7 +288,7 @@ sub ip-iplengths(UInt:D $version UInt) is export {
 # Purpose : Get an IP version
 # Params  : IP address
 # Returns : 4, 6, 0 (don't know)
-sub ip-get-version(Str:D $ip --> UInt) is export {
+sub ip-get-version(Str:D $ip --> UInt) is export(:ip-get-version) {
     # If the address does not contain any ':', maybe it's IPv4
     return 4 if $ip !~~ /\:/ and ip-is-ipv4($ip);
 
@@ -304,7 +304,7 @@ sub ip-get-version(Str:D $ip --> UInt) is export {
 # Purpose : Expand an address from compact notation
 # Params  : IP address, IP version
 # Returns : expanded IP address or undef on failure
-sub ip-expand-address(Str:D $ip is copy, UInt $ip-version where &ip-version --> Str) is export {
+sub ip-expand-address(Str:D $ip is copy, UInt $ip-version where &ip-version --> Str) is export(:ip-expand-address) {
 
     # IPv4 : add .0 for missing quads
     if $ip-version == 4 {
@@ -406,7 +406,7 @@ sub ip-expand-address(Str:D $ip is copy, UInt $ip-version where &ip-version --> 
 # Purpose : Check if an IP address is version 4
 # Params  : IP address
 # Returns : True (yes) or False (no)
-sub ip-is-ipv4(Str:D $ip is copy --> Bool) is export {
+sub ip-is-ipv4(Str:D $ip is copy --> Bool) is export(:ip-is-ipv4) {
     # we don't use a constraint on the input here so we
     # can report specific problems for debugging
 
@@ -460,7 +460,7 @@ sub ip-is-ipv4(Str:D $ip is copy --> Bool) is export {
 # Purpose : Check if an IP address is version 6
 # Params  : IP address
 # Returns : True (yes) or False (no)
-sub ip-is-ipv6(Str:D $ip is copy --> Bool) is export {
+sub ip-is-ipv6(Str:D $ip is copy --> Bool) is export(:ip-is-ipv6) {
     # we don't use a constraint on the input here so we
     # can report specific problems for debugging
 
