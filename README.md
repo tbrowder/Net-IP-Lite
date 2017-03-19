@@ -1,7 +1,6 @@
 # Net::IP::Lite
 
-[![Build Status](https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg?branch=master)]
-  (https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6)
+[![Build Status](https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg?branch=master)](https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6)
 
 This is a limited Perl 6 version of CPAN's Perl 5 module
 [Net::IP](https://metacpan.org/pod/Net::IP).  It provides a subset of
@@ -60,7 +59,8 @@ zef install Net::IP::Lite
 panda install Net::IP::Lite
 ```
 
-If either attempt shows that the module isn't found or available, ensure your installer is current:
+If either attempt shows that the module isn't found or available,
+ensure your installer is current:
 
 ```Perl6
 zef update
