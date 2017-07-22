@@ -14,7 +14,6 @@
         "Net::IP::Lite" : "lib/Net/IP/Lite.pm6"
     },
     "test-depends"     : [
-	"Test::META"
     ],
     "depends" : [
         "Number::More",
