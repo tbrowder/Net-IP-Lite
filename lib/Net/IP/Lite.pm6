@@ -1,7 +1,7 @@
 unit module Net::IP::Lite:auth<github:tbrowder>;
 
 use Number::More :bin2dec, :bin2hex, 
-                 :hexchar2bin, :token-binary;
+                 :hex2bin, :token-binary;
 use Text::More   :count-substrs;
 
 # file: ALL-SUBS.md
@@ -251,7 +251,7 @@ sub ip-iptobin(Str:D $ip is copy, UInt $ipversion --> Str) is export(:ip-iptobin
     # convert each 4-bit hex digit to 4-bit binary, and combine into the ip
     my $binip = '';
     for @c -> $c {
-	$binip ~= hexchar2bin($c);
+	$binip ~= hex2bin($c, 4);
     }
     # Check binary size
     my $nbits = $binip.chars;
