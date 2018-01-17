@@ -1,5 +1,5 @@
 # Net::IP::Lite
-[![Build Status](https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg?branch=master)](https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6)
+[![Build Status](https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6.svg)](https://travis-ci.org/tbrowder/Net-IP-Lite-Perl6)
 
 This is a limited Perl 6 version of CPAN's Perl 5 module
 [Net::IP](https://metacpan.org/pod/Net::IP).  It provides a subset of
