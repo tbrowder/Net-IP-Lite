@@ -1,7 +1,7 @@
 {
     "perl"        : "6.*",
     "name"        : "Net::IP::Lite",
-    "version"     : "0.2.0",
+    "version"     : "1.0.0",
     "description" : "Provides utility functions for dealing with IPv4 and IPv6 addresses.",
     "auth"        : "github:tbrowder",
     "author"      : "github:tbrowder",
